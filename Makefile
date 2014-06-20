@@ -64,7 +64,7 @@ pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz
 .PHONY: linux.dsc
 linux.dsc: $(ALL_LINUX_DSCS)
 
-dists/%/source/.stamp-linux.dsc: linux/.stamp-linux.dsc
+dists/%/main/source/.stamp-linux.dsc: linux/.stamp-linux.dsc
 	install --directory $(shell dirname $@)/
 	install --mode 644 linux/linux_$(LINUX_VERSION)*.debian.tar.xz   $(shell dirname $@)/
 	install --mode 644 linux/linux_$(LINUX_VERSION)*.dsc             $(shell dirname $@)/
