@@ -56,9 +56,6 @@ linux/linux-$(LINUX_VERSION)/debian: linux/$(LINUX_TARBALL)
 	git clone $(LINUX_RTAI_DEBIAN_GIT) linux/linux-$(LINUX_VERSION)/debian
 	(cd linux/linux-$(LINUX_VERSION)/debian; git checkout $(LINUX_RTAI_DEBIAN_BRANCH))
 
-#linux/linux-$(LINUX_VERSION): linux/$(LINUX_TARBALL)
-#	(cd linux; tar --xz -xf $(LINUX_TARBALL))
-
 linux/$(LINUX_TARBALL):
 	mkdir -p linux
 	curl -o $@ $(LINUX_TARBALL_URL)
