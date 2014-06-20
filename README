@@ -45,15 +45,7 @@ available in the Debian Linux Kernel Handbook:
     http://kernel-handbook.alioth.debian.org/
 
 
-
-
-
-
-
-To prepare the repo (FIXME?):
-
-    QUILT_PATCHES='debian/patches' quilt push -a
-    fakeroot debian/rules source
+== Old notes to self
 
 To build all debs:
 
@@ -65,19 +57,8 @@ To build just a particular deb:
 
 To build a dsc:
 
-    build a linux_orig tarball:
-
-        fakeroot debian/rules orig
-
-    build a dsc:
-
-        dpkg-buildpackage -S -us -uc -I
-        (need to run that command twice, wth?)
-
     compile it with pbuilder:
 
         DEB_BUILD_OPTIONS=parallel=$(($(nproc)*3/2)) sudo -E pbuilder --build --aptcache pbuilder/aptcache --buildplace pbuilder --buildresult $PWD --basetgz pbuilder/wheezy-i386.tgz linux_*.dsc
-
-    aww yes!
 
 
