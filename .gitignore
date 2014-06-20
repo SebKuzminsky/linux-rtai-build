@@ -2,3 +2,4 @@ linux/
 pbuilder/
 .*.swp
 tmp/
+aptcache/
