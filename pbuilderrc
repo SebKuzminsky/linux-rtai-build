@@ -46,7 +46,7 @@ BUILDPLACE="${TOPDIR}/tmp"
 BUILDRESULT="pbuilder/${DIST}/${ARCH}/pkgs"
 
 # cache for packages
-APTCACHE="pbuilder/aptcache/${DIST}/${ARCH}/"
+APTCACHE="aptcache/${DIST}/${ARCH}/"
 
 # ccache
 CCACHEDIR="${TOPDIR}/ccache"

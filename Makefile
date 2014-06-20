@@ -35,7 +35,7 @@ KEY_IDS = $(WHEEZY_KEY_ID) $(PRECISE_KEY_ID)
 #
 
 .PHONY: linux.deb
-linux.deb: linux.dsc
+linux.deb: linux.dsc pbuilder/$(DIST)-$(ARCH).tgz
 
 .PHONY: linux.dsc
 linux.dsc: linux/linux-$(LINUX_VERSION)
@@ -79,6 +79,14 @@ pbuilder/%/base.tgz: pbuilder/keyring.gpg
 	mkdir -p pbuilder/$(*D)/$(*F)
 	sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --create --basetgz $@ --configfile pbuilderrc
 
+
+#pbuilder/$(DIST)-$(ARCH).tgz: pbuilder/keyring.gpg
+# wheezy:
+#	sudo pbuilder --create --basetgz $@ --mirror http://ftp.debian.org/debian --distribution wheezy --architecture i386 --components 'main' --debootstrapopts --keyring=$HOME/.gnupg/pubring.gpg
+#
+#    precise:
+#        sudo pbuilder --create --basetgz pbuilder/precise-i386.tgz --mirror http://us.archive.ubuntu.com/ubuntu --distribution precise --architecture i386 --components 'main' --debootstrap
+
 pbuilder/keyring.gpg:
 	mkdir -p pbuilder
 	gpg --keyserver hkp://keys.gnupg.net --keyring $@ --no-default-keyring --recv-key $(KEY_IDS)
@@ -96,4 +104,6 @@ clean-pbuilder:
 .PHONY: clean
 clean: clean-pbuilder
 	rm -rf linux/
+	rm -rf aptcache/
+	# git clean -fdx .
 
