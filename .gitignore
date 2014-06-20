@@ -3,3 +3,4 @@ pbuilder/
 .*.swp
 tmp/
 aptcache/
+dists/

@@ -44,10 +44,11 @@ linux.deb: linux.dsc pbuilder/$(DIST)-$(ARCH).tgz
 linux.dsc: $(ALL_LINUX_DSCS)
 
 dists/%/source/.stamp-linux.dsc: linux/.stamp-linux.dsc
-	cp linux/linux-$(LINUX_VERSION)*.debian.tar.xz   $(shell dirname $@)
-	cp linux/linux-$(LINUX_VERSION)*.dsc             $(shell dirname $@)
-	cp linux/linux-$(LINUX_VERSION)*_source.changes  $(shell dirname $@)
-	cp linux/linux-$(LINUX_VERSION)*.orig.tar        $(shell dirname $@)
+	install --directory $(shell dirname $@)/
+	install linux/linux_$(LINUX_VERSION)*.debian.tar.xz   $(shell dirname $@)/
+	install linux/linux_$(LINUX_VERSION)*.dsc             $(shell dirname $@)/
+	install linux/linux_$(LINUX_VERSION)*_source.changes  $(shell dirname $@)/
+	install linux/linux_$(LINUX_VERSION)*.orig.tar.xz     $(shell dirname $@)/
 
 linux/.stamp-linux.dsc:
 	# Prepare the linux sources and the debian packaging, then make the dsc.
