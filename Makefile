@@ -49,6 +49,7 @@ dists/%/source/.stamp-linux.dsc: linux/.stamp-linux.dsc
 	install linux/linux_$(LINUX_VERSION)*.dsc             $(shell dirname $@)/
 	install linux/linux_$(LINUX_VERSION)*_source.changes  $(shell dirname $@)/
 	install linux/linux_$(LINUX_VERSION)*.orig.tar.xz     $(shell dirname $@)/
+	touch $@
 
 # Prepare the linux sources and the debian packaging, then make the dsc.
 # FIXME: This emits an ugly error message, basically warning us
@@ -59,6 +60,7 @@ linux/.stamp-linux.dsc: linux/linux-$(LINUX_VERSION)
 		fakeroot debian/rules source || true; \
 		dpkg-buildpackage -S -us -uc -I; \
 	)
+	touch $@
 
 linux/linux-$(LINUX_VERSION): linux/linux-$(LINUX_VERSION)/debian
 	(cd $@; fakeroot debian/rules orig)
