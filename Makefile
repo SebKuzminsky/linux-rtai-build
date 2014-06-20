@@ -63,6 +63,7 @@ linux/$(LINUX_TARBALL):
 	mkdir -p linux
 	curl -o $@ $(LINUX_TARBALL_URL)
 
+# this removes everything but the upstream tarball
 .PHONY: clean-kernel
 clean-kernel:
 	rm -rf linux/linux-$(LINUX_VERSION)
@@ -72,9 +73,20 @@ clean-kernel:
 # pbuilder rules
 #
 
+# Base chroot tarballs are named e.g. pbuilder/lucid/i386/base.tgz
+# in this case, $(*D) = lucid; $(*F) = i386
+pbuilder/%/base.tgz: pbuilder/keyring.gpg
+	mkdir -p pbuilder/$(*D)/$(*F)
+	sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --create --basetgz $@ --configfile pbuilderrc
+
 pbuilder/keyring.gpg:
 	mkdir -p pbuilder
 	gpg --keyserver hkp://keys.gnupg.net --keyring $@ --no-default-keyring --recv-key $(KEY_IDS)
+
+.PHONY: clean-pbuilder
+clean-pbuilder:
+	sudo rm -rf pbuilder/aptcache
+	rm -rf pbuilder/
 
 
 #
@@ -82,7 +94,6 @@ pbuilder/keyring.gpg:
 #
 
 .PHONY: clean
-clean:
+clean: clean-pbuilder
 	rm -rf linux/
-	rm pbuilder/keyring.gpg
 
