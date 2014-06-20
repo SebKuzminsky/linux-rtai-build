@@ -55,6 +55,7 @@ dists/%/source/.stamp-linux.dsc: linux/.stamp-linux.dsc
 # FIXME: This emits an ugly error message, basically warning us
 # that this is not an official Debian linux kernel package.
 linux/.stamp-linux.dsc: linux/linux-$(LINUX_VERSION)
+	cp linux/orig/$(LINUX_TARBALL) linux/
 	( \
 		cd $^; \
 		fakeroot debian/rules source || true; \
@@ -62,22 +63,22 @@ linux/.stamp-linux.dsc: linux/linux-$(LINUX_VERSION)
 	)
 	touch $@
 
-linux/linux-$(LINUX_VERSION): linux/linux-$(LINUX_VERSION)/debian
-	(cd $@; fakeroot debian/rules orig)
-
-linux/linux-$(LINUX_VERSION)/debian: linux/$(LINUX_TARBALL)
+linux/linux-$(LINUX_VERSION): linux/orig/$(LINUX_TARBALL)
 	mkdir linux/linux-$(LINUX_VERSION)
 	git clone $(LINUX_RTAI_DEBIAN_GIT) linux/linux-$(LINUX_VERSION)/debian
 	(cd linux/linux-$(LINUX_VERSION)/debian; git checkout $(LINUX_RTAI_DEBIAN_BRANCH))
+	(cd $@; fakeroot debian/rules orig)
 
-linux/$(LINUX_TARBALL):
-	mkdir -p linux
+linux/orig/$(LINUX_TARBALL):
+	mkdir -p $(shell dirname $@)
 	curl -o $@ $(LINUX_TARBALL_URL)
 
 # this removes everything but the upstream tarball
 .PHONY: clean-kernel
 clean-kernel:
 	rm -rf linux/linux-$(LINUX_VERSION)
+	rm -f linux/linux_$(LINUX_VERSION)*
+	rm -f linux/.stamp-linux.dsc
 
 
 #
