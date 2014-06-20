@@ -3,7 +3,10 @@
 # Override these in the environment as you wish.
 #
 
-DISTS ?= wheezy precise
+# re-enable precise when i figure out why the kernel doesnt build
+#DISTS ?= wheezy precise
+
+DISTS ?= wheezy
 ARCHES ?= i386
 
 
