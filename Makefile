@@ -3,8 +3,8 @@
 # Override these in the environment as you wish.
 #
 
-DIST ?= wheezy
-ARCH ?= i386
+DISTS ?= wheezy precise
+ARCHES ?= i386
 
 
 #
@@ -30,6 +30,9 @@ PRECISE_KEY_ID = 40976EAF437D05B5
 KEY_IDS = $(WHEEZY_KEY_ID) $(PRECISE_KEY_ID)
 
 
+ALL_LINUX_DSCS = $(foreach DIST,$(DISTS),dists/$(DIST)/source/.stamp-linux.dsc)
+
+
 #
 # Linux rules
 #
@@ -38,7 +41,15 @@ KEY_IDS = $(WHEEZY_KEY_ID) $(PRECISE_KEY_ID)
 linux.deb: linux.dsc pbuilder/$(DIST)-$(ARCH).tgz
 
 .PHONY: linux.dsc
-linux.dsc: linux/linux-$(LINUX_VERSION)
+linux.dsc: $(ALL_LINUX_DSCS)
+
+dists/%/source/.stamp-linux.dsc: linux/.stamp-linux.dsc
+	cp linux/linux-$(LINUX_VERSION)*.debian.tar.xz   $(shell dirname $@)
+	cp linux/linux-$(LINUX_VERSION)*.dsc             $(shell dirname $@)
+	cp linux/linux-$(LINUX_VERSION)*_source.changes  $(shell dirname $@)
+	cp linux/linux-$(LINUX_VERSION)*.orig.tar        $(shell dirname $@)
+
+linux/.stamp-linux.dsc:
 	# Prepare the linux sources and the debian packaging, then make the dsc.
 	# FIXME: This emits an ugly error message, basically warning us
 	# that this is not an official Debian linux kernel package.
