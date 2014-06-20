@@ -25,6 +25,11 @@ LINUX_RTAI_DEBIAN_GIT = ssh://highlab.com/home/seb/linux-rtai-debian.git
 LINUX_RTAI_DEBIAN_BRANCH = 3.4.87-rtai
 
 
+WHEEZY_KEY_ID = 6FB2A1C265FFB764
+PRECISE_KEY_ID = 40976EAF437D05B5
+KEY_IDS = $(WHEEZY_KEY_ID) $(PRECISE_KEY_ID)
+
+
 #
 # Linux rules
 #
@@ -64,10 +69,20 @@ clean-kernel:
 
 
 #
+# pbuilder rules
+#
+
+pbuilder/keyring.gpg:
+	mkdir -p pbuilder
+	gpg --keyserver hkp://keys.gnupg.net --keyring $@ --no-default-keyring --recv-key $(KEY_IDS)
+
+
+#
 # misc rules
 #
 
 .PHONY: clean
 clean:
 	rm -rf linux/
+	rm pbuilder/keyring.gpg
 
