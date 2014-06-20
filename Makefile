@@ -32,13 +32,31 @@ KEY_IDS = $(WHEEZY_KEY_ID) $(PRECISE_KEY_ID)
 
 ALL_LINUX_DSCS = $(foreach DIST,$(DISTS),dists/$(DIST)/source/.stamp-linux.dsc)
 
+ALL_LINUX_DEBS = $(foreach DIST,$(DISTS),\
+    $(foreach ARCH,$(ARCHES),\
+        pbuilder/$(DIST)/$(ARCH)/.stamp-linux.deb))
+
 
 #
 # Linux rules
 #
 
 .PHONY: linux.deb
-linux.deb: linux.dsc pbuilder/$(DIST)-$(ARCH).tgz
+linux.deb: $(ALL_LINUX_DEBS)
+
+pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz
+	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
+	sudo \
+	    DIST=$(*D) \
+	    ARCH=$(*F) \
+	    TOPDIR=$(shell pwd) \
+	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
+	    pbuilder \
+	        --build \
+	        --configfile pbuilderrc \
+	        --basetgz pbuilder/$(*D)/$(*F)/base.tgz \
+	        dists/$(*D)/source/linux_*.dsc
+
 
 .PHONY: linux.dsc
 linux.dsc: $(ALL_LINUX_DSCS)
@@ -91,14 +109,6 @@ clean-kernel:
 pbuilder/%/base.tgz: pbuilder/keyring.gpg
 	mkdir -p pbuilder/$(*D)/$(*F)
 	sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --create --basetgz $@ --configfile pbuilderrc
-
-
-#pbuilder/$(DIST)-$(ARCH).tgz: pbuilder/keyring.gpg
-# wheezy:
-#	sudo pbuilder --create --basetgz $@ --mirror http://ftp.debian.org/debian --distribution wheezy --architecture i386 --components 'main' --debootstrapopts --keyring=$HOME/.gnupg/pubring.gpg
-#
-#    precise:
-#        sudo pbuilder --create --basetgz pbuilder/precise-i386.tgz --mirror http://us.archive.ubuntu.com/ubuntu --distribution precise --architecture i386 --components 'main' --debootstrap
 
 pbuilder/keyring.gpg:
 	mkdir -p pbuilder

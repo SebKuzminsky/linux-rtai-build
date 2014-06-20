@@ -55,10 +55,7 @@ To build just a particular deb:
 
     DEB_BUILD_OPTIONS=parallel=$(($(nproc)*2)) fakeroot make -f debian/rules.gen binary-arch_amd64_rtai   
 
-To build a dsc:
 
-    compile it with pbuilder:
 
-        DEB_BUILD_OPTIONS=parallel=$(($(nproc)*3/2)) sudo -E pbuilder --build --aptcache pbuilder/aptcache --buildplace pbuilder --buildresult $PWD --basetgz pbuilder/wheezy-i386.tgz linux_*.dsc
 
 

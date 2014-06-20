@@ -4,3 +4,4 @@ pbuilder/
 tmp/
 aptcache/
 dists/
+ccache/
