@@ -25,7 +25,7 @@ LINUX_RTAI_DEBIAN_BRANCH = 3.4.87-rtai
 #
 
 .PHONY: linux.dsc
-linux.dsc: linux/linux-$(LINUX_VERSION) linux/linux-$(LINUX_VERSION)/debian
+linux.dsc: linux/linux-$(LINUX_VERSION)/debian
 
 linux/linux-$(LINUX_VERSION)/debian: linux/linux-$(LINUX_VERSION)
 	( \
