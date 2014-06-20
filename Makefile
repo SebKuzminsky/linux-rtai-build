@@ -26,7 +26,7 @@ LINUX_RTAI_DEBIAN_BRANCH = 3.4.87-rtai
 
 
 #
-# rules
+# Linux rules
 #
 
 .PHONY: linux.deb
@@ -61,6 +61,11 @@ linux/$(LINUX_TARBALL):
 .PHONY: clean-kernel
 clean-kernel:
 	rm -rf linux/linux-$(LINUX_VERSION)
+
+
+#
+# misc rules
+#
 
 .PHONY: clean
 clean:
