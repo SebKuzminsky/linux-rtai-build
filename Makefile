@@ -50,10 +50,10 @@ dists/%/source/.stamp-linux.dsc: linux/.stamp-linux.dsc
 	install linux/linux_$(LINUX_VERSION)*_source.changes  $(shell dirname $@)/
 	install linux/linux_$(LINUX_VERSION)*.orig.tar.xz     $(shell dirname $@)/
 
-linux/.stamp-linux.dsc:
-	# Prepare the linux sources and the debian packaging, then make the dsc.
-	# FIXME: This emits an ugly error message, basically warning us
-	# that this is not an official Debian linux kernel package.
+# Prepare the linux sources and the debian packaging, then make the dsc.
+# FIXME: This emits an ugly error message, basically warning us
+# that this is not an official Debian linux kernel package.
+linux/.stamp-linux.dsc: linux/linux-$(LINUX_VERSION)
 	( \
 		cd $^; \
 		fakeroot debian/rules source || true; \
