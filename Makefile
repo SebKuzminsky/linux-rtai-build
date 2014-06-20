@@ -45,10 +45,10 @@ linux.dsc: $(ALL_LINUX_DSCS)
 
 dists/%/source/.stamp-linux.dsc: linux/.stamp-linux.dsc
 	install --directory $(shell dirname $@)/
-	install linux/linux_$(LINUX_VERSION)*.debian.tar.xz   $(shell dirname $@)/
-	install linux/linux_$(LINUX_VERSION)*.dsc             $(shell dirname $@)/
-	install linux/linux_$(LINUX_VERSION)*_source.changes  $(shell dirname $@)/
-	install linux/linux_$(LINUX_VERSION)*.orig.tar.xz     $(shell dirname $@)/
+	install --mode 644 linux/linux_$(LINUX_VERSION)*.debian.tar.xz   $(shell dirname $@)/
+	install --mode 644 linux/linux_$(LINUX_VERSION)*.dsc             $(shell dirname $@)/
+	install --mode 644 linux/linux_$(LINUX_VERSION)*_source.changes  $(shell dirname $@)/
+	install --mode 644 linux/linux_$(LINUX_VERSION)*.orig.tar.xz     $(shell dirname $@)/
 	touch $@
 
 # Prepare the linux sources and the debian packaging, then make the dsc.
