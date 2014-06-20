@@ -60,6 +60,12 @@ pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz
 	        --basetgz pbuilder/$(*D)/$(*F)/base.tgz \
 	        dists/$(*D)/source/linux_*.dsc
 
+	mkdir -p dists/$(*D)/main/udeb/binary-$(*F)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb dists/$(*D)/main/udeb/binary-$(*F)
+
+	mkdir -p dists/$(*D)/main/binary-$(*F)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb dists/$(*D)/main/binary-$(*F)
+
 
 .PHONY: linux.dsc
 linux.dsc: $(ALL_LINUX_DSCS)
