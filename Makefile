@@ -33,7 +33,7 @@ PRECISE_KEY_ID = 40976EAF437D05B5
 KEY_IDS = $(WHEEZY_KEY_ID) $(PRECISE_KEY_ID)
 
 
-ALL_LINUX_DSCS = $(foreach DIST,$(DISTS),dists/$(DIST)/source/.stamp-linux.dsc)
+ALL_LINUX_DSCS = $(foreach DIST,$(DISTS),dists/$(DIST)/main/source/.stamp-linux.dsc)
 
 ALL_LINUX_DEBS = $(foreach DIST,$(DISTS),\
     $(foreach ARCH,$(ARCHES),\
@@ -58,7 +58,7 @@ pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz
 	        --build \
 	        --configfile pbuilderrc \
 	        --basetgz pbuilder/$(*D)/$(*F)/base.tgz \
-	        dists/$(*D)/source/linux_*.dsc
+	        dists/$(*D)/main/source/linux_*.dsc
 
 	mkdir -p dists/$(*D)/main/udeb/binary-$(*F)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb dists/$(*D)/main/udeb/binary-$(*F)
