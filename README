@@ -58,7 +58,7 @@ To build just a particular deb:
 
 = Open Issues
 
-linux doesnt build on precise:
+== Linux doesnt build on Precise
 
 -----
 dh_testdir
@@ -81,4 +81,8 @@ tar: 0x00000004: Cannot stat: No such file or directory
 tar: 0x00000005: Cannot stat: No such file or directory
 ... (and lots more)
 -----
+
+== Why does pbuilder re-create the dsc, but differently?
+
+The .orig.tar.xz is the same but the other files have different md5sums.
 
