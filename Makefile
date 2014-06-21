@@ -66,6 +66,16 @@ pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz
 	mkdir -p dists/$(*D)/main/binary-$(*F)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb dists/$(*D)/main/binary-$(*F)
 
+	# update the deb archive
+	rm -f $$(find dists/$(*D)/ -name 'Contents*')
+	apt-ftparchive generate generate-$(*D).conf
+
+	rm -f dists/$(*D)/Release
+	apt-ftparchive -c release-$(*D).conf release dists/$(*D)/ > dists/$(*D)/Release
+
+	rm -f dists/$(*D)/Release.gpg
+	gpg --sign --default-key=EMC -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
+
 
 .PHONY: linux.dsc
 linux.dsc: $(ALL_LINUX_DSCS)
