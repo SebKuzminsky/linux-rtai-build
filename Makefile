@@ -9,6 +9,7 @@
 DISTS ?= wheezy
 ARCHES ?= i386
 
+ARCHIVE_SIGNING_KEY = 'Linux/RTAI deb archive signing key'
 
 #
 # These shouldn't be changed unless you're upgrading the packages to a new
@@ -47,7 +48,7 @@ ALL_LINUX_DEBS = $(foreach DIST,$(DISTS),\
 .PHONY: linux.deb
 linux.deb: $(ALL_LINUX_DEBS)
 
-pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz
+pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz dists/.stamp-dists
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -58,12 +59,9 @@ pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz
 	        --build \
 	        --configfile pbuilderrc \
 	        --basetgz pbuilder/$(*D)/$(*F)/base.tgz \
-	        dists/$(*D)/main/source/linux_*.dsc
+	        linux/linux_*.dsc
 
-	mkdir -p dists/$(*D)/main/udeb/binary-$(*F)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb dists/$(*D)/main/udeb/binary-$(*F)
-
-	mkdir -p dists/$(*D)/main/binary-$(*F)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb dists/$(*D)/main/binary-$(*F)
 
 	# update the deb archive
@@ -74,7 +72,7 @@ pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz
 	apt-ftparchive -c release-$(*D).conf release dists/$(*D)/ > dists/$(*D)/Release
 
 	rm -f dists/$(*D)/Release.gpg
-	gpg --sign --default-key=EMC -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
+	gpg --sign --default-key="$(ARCHIVE_SIGNING_KEY)" -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
 
 
 .PHONY: linux.dsc
@@ -142,6 +140,15 @@ clean-pbuilder:
 #
 # misc rules
 #
+
+dists/.stamp-dists:
+	(for D in $(DISTS); do \
+		install --mode=0755 --directory dists/$$D/main/source; \
+		for A in $(ARCHES); do \
+			install --mode=0755 --directory dists/$$D/main/binary-$$A; \
+			install --mode=0755 --directory dists/$$D/main/udeb/binary-$$A; \
+		done; \
+	done)
 
 .PHONY: clean
 clean: clean-pbuilder
