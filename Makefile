@@ -21,6 +21,8 @@ LINUX_VERSION = 3.4.87
 # this is the URL of the tarball at kernel.org
 LINUX_TARBALL_URL = https://www.kernel.org/pub/linux/kernel/v3.x/linux-$(LINUX_VERSION).tar.xz
 
+LINUX_TARBALL_KERNEL_ORG = linux-$(LINUX_VERSION).tar.xz
+
 # this is what we'll call the tarball locally, since this is the name the
 # debian packaging wants
 LINUX_TARBALL = linux_$(LINUX_VERSION).orig.tar.xz
@@ -61,18 +63,19 @@ pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz dists/.s
 	        --basetgz pbuilder/$(*D)/$(*F)/base.tgz \
 	        linux/linux_*.dsc
 
+	# move built files to the deb archive
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb dists/$(*D)/main/udeb/binary-$(*F)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb dists/$(*D)/main/binary-$(*F)
 
 	# update the deb archive
 	rm -f $$(find dists/$(*D)/ -name 'Contents*')
-	apt-ftparchive generate generate-$(*D).conf
-
 	rm -f dists/$(*D)/Release
-	apt-ftparchive -c release-$(*D).conf release dists/$(*D)/ > dists/$(*D)/Release
-
 	rm -f dists/$(*D)/Release.gpg
-	gpg --sign --default-key="$(ARCHIVE_SIGNING_KEY)" -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
+	apt-ftparchive generate generate-$(*D).conf
+	apt-ftparchive -c release-$(*D).conf release dists/$(*D)/ > dists/$(*D)/Release
+	gpg --sign --default-key=$(ARCHIVE_SIGNING_KEY) -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
+
+	touch $@
 
 
 .PHONY: linux.dsc
@@ -105,9 +108,12 @@ linux/linux-$(LINUX_VERSION): linux/orig/$(LINUX_TARBALL)
 	(cd linux/linux-$(LINUX_VERSION)/debian; git checkout $(LINUX_RTAI_DEBIAN_BRANCH))
 	(cd $@; fakeroot debian/rules orig)
 
-linux/orig/$(LINUX_TARBALL):
+linux/orig/$(LINUX_TARBALL_KERNEL_ORG):
 	mkdir -p $(shell dirname $@)
-	curl -o $@ $(LINUX_TARBALL_URL)
+	(cd $(shell dirname $@); curl -O $(LINUX_TARBALL_URL))
+
+linux/orig/$(LINUX_TARBALL): linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
+	(cd $(shell dirname $@; cp $(LINUX_TARBALL_KERNEL_ORG) $(LINUX_TARBALL))
 
 # this removes everything but the upstream tarball
 .PHONY: clean-kernel
