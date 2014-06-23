@@ -127,7 +127,7 @@ stamps/linux.dsc: linux/linux-$(LINUX_VERSION)
 
 linux/linux-$(LINUX_VERSION): linux/orig/$(LINUX_TARBALL)
 	rm -rf linux/linux-$(LINUX_VERSION)
-	mkdir linux/linux-$(LINUX_VERSION)
+	mkdir -p linux/linux-$(LINUX_VERSION)
 	git clone $(LINUX_RTAI_DEBIAN_GIT) linux/linux-$(LINUX_VERSION)/debian
 	(cd linux/linux-$(LINUX_VERSION)/debian; git checkout $(LINUX_RTAI_DEBIAN_BRANCH))
 	(cd $@; fakeroot debian/rules orig)
