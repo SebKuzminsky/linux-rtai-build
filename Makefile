@@ -173,10 +173,10 @@ linux-tools.dsc: $(ALL_LINUX_TOOLS_DSCS)
 
 dists/%/main/source/.stamp-linux-tools.dsc: linux-tools/.stamp-linux-tools.dsc
 	install --directory $(shell dirname $@)/
-	install --mode 0644 linux-tools_3.4-linuxcnc2.debian.tar.xz  $(shell dirname $@)
-	install --mode 0644 linux-tools_3.4-linuxcnc2.dsc            $(shell dirname $@)
-	install --mode 0644 linux-tools_3.4-linuxcnc2_source.changes $(shell dirname $@)
-	install --mode 0644 linux-tools_3.4.orig.tar.xz              $(shell dirname $@)
+	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2.debian.tar.xz  $(shell dirname $@)
+	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2.dsc            $(shell dirname $@)
+	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2_source.changes $(shell dirname $@)
+	install --mode 0644 linux-tools/linux-tools_3.4.orig.tar.xz              $(shell dirname $@)
 	touch $@
 
 # The "./debian/rules debian/control" step will fail; read output
