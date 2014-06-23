@@ -30,6 +30,9 @@ LINUX_TARBALL = linux_$(LINUX_VERSION).orig.tar.xz
 LINUX_RTAI_DEBIAN_GIT = ssh://highlab.com/home/seb/linux-rtai-debian.git
 LINUX_RTAI_DEBIAN_BRANCH = 3.4.87-rtai
 
+LINUX_TOOLS_GIT = ssh://highlab.com/home/seb/linux-tools.git
+LINUX_TOOLS_BRANCH = 3.4
+
 
 WHEEZY_KEY_ID = 6FB2A1C265FFB764
 PRECISE_KEY_ID = 40976EAF437D05B5
@@ -41,6 +44,13 @@ ALL_LINUX_DSCS = $(foreach DIST,$(DISTS),dists/$(DIST)/main/source/.stamp-linux.
 ALL_LINUX_DEBS = $(foreach DIST,$(DISTS),\
     $(foreach ARCH,$(ARCHES),\
         pbuilder/$(DIST)/$(ARCH)/.stamp-linux.deb))
+
+
+ALL_LINUX_TOOLS_DSCS = $(foreach DIST,$(DISTS),dists/$(DIST)/main/source/.stamp-linux-tools.dsc)
+
+ALL_LINUX_TOOLS_DEBS = $(foreach DIST,$(DISTS),\
+    $(foreach ARCH,$(ARCHES),\
+        pbuilder/$(DIST)/$(ARCH)/.stamp-linux-tools.deb))
 
 
 #
@@ -121,6 +131,70 @@ clean-kernel:
 	rm -rf linux/linux-$(LINUX_VERSION)
 	rm -f linux/linux_$(LINUX_VERSION)*
 	rm -f linux/.stamp-linux.dsc
+
+
+#
+# linux-tools
+#
+
+.PHONY: linux-tools.deb
+linux-tools.deb: $(ALL_LINUX_TOOLS_DEBS)
+
+pbuilder/%/.stamp-linux-tools.deb: linux-tools/.stamp-linux-tools.dsc pbuilder/%/base.tgz dists/.stamp-dists
+	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
+	sudo \
+	    DIST=$(*D) \
+	    ARCH=$(*F) \
+	    TOPDIR=$(shell pwd) \
+	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
+	    pbuilder \
+	        --build \
+	        --configfile pbuilderrc \
+	        --basetgz pbuilder/$(*D)/$(*F)/base.tgz \
+	        linux-tools/linux-tools_*.dsc
+
+	# move built files to the deb archive
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb dists/$(*D)/main/udeb/binary-$(*F)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb dists/$(*D)/main/binary-$(*F)
+
+	# update the deb archive
+	rm -f $$(find dists/$(*D)/ -name 'Contents*')
+	rm -f dists/$(*D)/Release
+	rm -f dists/$(*D)/Release.gpg
+	apt-ftparchive generate generate-$(*D).conf
+	apt-ftparchive -c release-$(*D).conf release dists/$(*D)/ > dists/$(*D)/Release
+	gpg --sign --default-key="$(ARCHIVE_SIGNING_KEY)" -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
+
+	touch $@
+
+
+.PHONY: linux-tools.dsc
+linux-tools.dsc: $(ALL_LINUX_TOOLS_DSCS)
+
+dists/%/main/source/.stamp-linux-tools.dsc: linux-tools/.stamp-linux-tools.dsc
+	install --directory $(shell dirname $@)/
+	install --mode 0644 linux-tools_3.4-linuxcnc2.debian.tar.xz  $(shell dirname $@)
+	install --mode 0644 linux-tools_3.4-linuxcnc2.dsc            $(shell dirname $@)
+	install --mode 0644 linux-tools_3.4-linuxcnc2_source.changes $(shell dirname $@)
+	install --mode 0644 linux-tools_3.4.orig.tar.xz              $(shell dirname $@)
+	touch $@
+
+# The "./debian/rules debian/control" step will fail; read output
+linux-tools/.stamp-linux-tools.dsc: linux-tools/linux-tools/debian/rules linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
+	( \
+		cd linux-tools/linux-tools; \
+		./debian/bin/genorig.py ../../linux/orig/$(LINUX_TARBALL_KERNEL_ORG); \
+		./debian/rules debian/control; \
+		./debian/rules orig; \
+		./debian/rules clean; \
+		dpkg-buildpackage -S -us -uc -I; \
+	)
+	touch $@
+
+linux-tools/linux-tools/debian/rules: linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
+	install -d --mode 0755 linux-tools/linux-tools
+	(cd linux-tools/linux-tools; git clone $(LINUX_TOOLS_GIT) debian)
+	(cd linux-tools/linux-tools/debian; git checkout $(LINUX_TOOLS_BRANCH))
 
 
 #

@@ -1,4 +1,5 @@
 linux/
+linux-tools/
 pbuilder/
 .*.swp
 tmp/
