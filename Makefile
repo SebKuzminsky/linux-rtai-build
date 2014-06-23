@@ -56,6 +56,7 @@ ALL_LINUX_TOOLS_DEBS = $(foreach DIST,$(DISTS),\
         stamps/$(DIST)/$(ARCH)/linux-tools.deb))
 
 
+DSC_DIR = dists/$*/main/source/
 DEB_DIR = dists/$(*D)/main/binary-$(*F)/
 UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
 
@@ -67,7 +68,7 @@ UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
 .PHONY: linux.deb
 linux.deb: $(ALL_LINUX_DEBS)
 
-stamps/%/linux.deb: stamps/linux.dsc pbuilder/%/base.tgz
+stamps/%/linux.deb: linux.dsc pbuilder/%/base.tgz
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -102,12 +103,11 @@ stamps/%/linux.deb: stamps/linux.dsc pbuilder/%/base.tgz
 linux.dsc: $(ALL_LINUX_DSCS)
 
 stamps/%/linux.dsc: stamps/linux.dsc
-	install --mode 0755 --directory dists/$*/main/source
-	install --mode 0644 linux/linux_$(LINUX_VERSION)*.debian.tar.xz   dists/$*/main/source
-	install --mode 0644 linux/linux_$(LINUX_VERSION)*.dsc             dists/$*/main/source
-	install --mode 0644 linux/linux_$(LINUX_VERSION)*_source.changes  dists/$*/main/source
-	install --mode 0644 linux/linux_$(LINUX_VERSION)*.orig.tar.xz     dists/$*/main/source
-
+	install --mode 0755 --directory $(DSC_DIR)
+	install --mode 0644 linux/linux_$(LINUX_VERSION)*.debian.tar.xz   $(DSC_DIR)
+	install --mode 0644 linux/linux_$(LINUX_VERSION)*.dsc             $(DSC_DIR)
+	install --mode 0644 linux/linux_$(LINUX_VERSION)*_source.changes  $(DSC_DIR)
+	install --mode 0644 linux/linux_$(LINUX_VERSION)*.orig.tar.xz     $(DSC_DIR)
 	mkdir -p $(shell dirname $@)
 	touch $@
 
@@ -154,7 +154,7 @@ clean-kernel:
 .PHONY: linux-tools.deb
 linux-tools.deb: $(ALL_LINUX_TOOLS_DEBS)
 
-stamps/%/linux-tools.deb: stamps/linux-tools.dsc pbuilder/%/base.tgz
+stamps/%/linux-tools.deb: linux-tools.dsc pbuilder/%/base.tgz
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -186,11 +186,11 @@ stamps/%/linux-tools.deb: stamps/linux-tools.dsc pbuilder/%/base.tgz
 linux-tools.dsc: $(ALL_LINUX_TOOLS_DSCS)
 
 stamps/%/linux-tools.dsc: stamps/linux-tools.dsc
-	install --mode 0755 --directory $(shell dirname $@)/
-	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2.debian.tar.xz  $(shell dirname $@)
-	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2.dsc            $(shell dirname $@)
-	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2_source.changes $(shell dirname $@)
-	install --mode 0644 linux-tools/linux-tools_3.4.orig.tar.xz              $(shell dirname $@)
+	install --mode 0755 --directory $(DSC_DIR)
+	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2.debian.tar.xz  $(DSC_DIR)
+	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2.dsc            $(DSC_DIR)
+	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2_source.changes $(DSC_DIR)
+	install --mode 0644 linux-tools/linux-tools_3.4.orig.tar.xz              $(DSC_DIR)
 	mkdir -p $(shell dirname $@)
 	touch $@
 
