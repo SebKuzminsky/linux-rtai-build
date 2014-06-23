@@ -60,7 +60,7 @@ ALL_LINUX_TOOLS_DEBS = $(foreach DIST,$(DISTS),\
 .PHONY: linux.deb
 linux.deb: $(ALL_LINUX_DEBS)
 
-pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz dists/.stamp-dists
+pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -140,7 +140,7 @@ clean-kernel:
 .PHONY: linux-tools.deb
 linux-tools.deb: $(ALL_LINUX_TOOLS_DEBS)
 
-pbuilder/%/.stamp-linux-tools.deb: linux-tools/.stamp-linux-tools.dsc pbuilder/%/base.tgz dists/.stamp-dists
+pbuilder/%/.stamp-linux-tools.deb: linux-tools/.stamp-linux-tools.dsc pbuilder/%/base.tgz
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -220,15 +220,6 @@ clean-pbuilder:
 #
 # misc rules
 #
-
-dists/.stamp-dists:
-	(for D in $(DISTS); do \
-		install --mode=0755 --directory dists/$$D/main/source; \
-		for A in $(ARCHES); do \
-			install --mode=0755 --directory dists/$$D/main/binary-$$A; \
-			install --mode=0755 --directory dists/$$D/main/udeb/binary-$$A; \
-		done; \
-	done)
 
 .PHONY: clean
 clean: clean-pbuilder
