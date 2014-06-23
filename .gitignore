@@ -1,5 +1,6 @@
 linux/
 linux-tools/
+rtai/
 pbuilder/
 .*.swp
 tmp/

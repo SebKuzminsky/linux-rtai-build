@@ -33,6 +33,9 @@ LINUX_RTAI_DEBIAN_BRANCH = 3.4.87-rtai
 LINUX_TOOLS_GIT = ssh://highlab.com/home/seb/linux-tools.git
 LINUX_TOOLS_BRANCH = 3.4
 
+RTAI_GIT = https://github.com/SebKuzminsky/rtai.git
+RTAI_BRANCH = prerelease-7
+
 
 WHEEZY_KEY_ID = 6FB2A1C265FFB764
 PRECISE_KEY_ID = 40976EAF437D05B5
@@ -195,6 +198,17 @@ linux-tools/linux-tools/debian/rules: linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 	install -d --mode 0755 linux-tools/linux-tools
 	(cd linux-tools/linux-tools; git clone $(LINUX_TOOLS_GIT) debian)
 	(cd linux-tools/linux-tools/debian; git checkout $(LINUX_TOOLS_BRANCH))
+
+
+#
+# rtai
+#
+
+rtai.dsc: rtai/debian/rules
+
+rtai/debian/rules:
+	git clone $(RTAI_GIT) rtai
+	(cd rtai; git checkout $(RTAI_BRANCH))
 
 
 #
