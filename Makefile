@@ -166,7 +166,7 @@ pbuilder/%/.stamp-linux-tools.deb: linux-tools/.stamp-linux-tools.dsc pbuilder/%
 	rm -f dists/$(*D)/Release.gpg
 	apt-ftparchive generate generate-$(*D).conf
 	apt-ftparchive -c release-$(*D).conf release dists/$(*D)/ > dists/$(*D)/Release
-	gpg --sign --default-key="$(ARCHIVE_SIGNING_KEY)" -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
+	gpg --sign --default-key=$(ARCHIVE_SIGNING_KEY) -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
 
 	touch $@
 
