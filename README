@@ -6,6 +6,10 @@ packaging provided by a local git repo based on Debian's packaging of
 the linux kernel.  Our local debian packaging of the linux kernel adds
 the rtai patch and not much else.
 
+Then build linux-tools.
+
+Then build RTAI.
+
 
 = Modifying/updating Linux or RTAI
 
@@ -43,6 +47,26 @@ Good info on working with the Debian packaging of the Linux kernel is
 available in the Debian Linux Kernel Handbook:
 
     http://kernel-handbook.alioth.debian.org/
+
+
+=  linux-tools
+
+The linux-tools packaging is from the upstream debian packaging.
+
+Add this to .git/config:
+
+-----
+    [svn-remote "dists-trunk"]
+    url = svn://svn.debian.org/svn/kernel/dists/trunk/linux-tools/debian/
+    fetch = :refs/remotes/dists-trunk
+-----
+
+The most recent commit in linux-tools dists-trunk that applies to linux
+3.4 is r19111, fcdbb9d49df93aa5801157ecd0d7b4f97754f5ab, so create a
+3.4 branch from that.
+
+Cherry-picked 784d0fc795fb7b8b9f6a6186335caa171c16225c (adds .tar.xz
+support).
 
 
 = Old notes to self
