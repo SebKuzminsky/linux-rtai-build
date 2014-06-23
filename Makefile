@@ -42,18 +42,22 @@ PRECISE_KEY_ID = 40976EAF437D05B5
 KEY_IDS = $(WHEEZY_KEY_ID) $(PRECISE_KEY_ID)
 
 
-ALL_LINUX_DSCS = $(foreach DIST,$(DISTS),dists/$(DIST)/main/source/.stamp-linux.dsc)
+ALL_LINUX_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/linux.dsc)
 
 ALL_LINUX_DEBS = $(foreach DIST,$(DISTS),\
     $(foreach ARCH,$(ARCHES),\
-        pbuilder/$(DIST)/$(ARCH)/.stamp-linux.deb))
+        stamps/$(DIST)/$(ARCH)/linux.deb))
 
 
-ALL_LINUX_TOOLS_DSCS = $(foreach DIST,$(DISTS),dists/$(DIST)/main/source/.stamp-linux-tools.dsc)
+ALL_LINUX_TOOLS_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/linux-tools.dsc)
 
 ALL_LINUX_TOOLS_DEBS = $(foreach DIST,$(DISTS),\
     $(foreach ARCH,$(ARCHES),\
-        pbuilder/$(DIST)/$(ARCH)/.stamp-linux-tools.deb))
+        stamps/$(DIST)/$(ARCH)/linux-tools.deb))
+
+
+DEB_DIR = dists/$(*D)/main/binary-$(*F)/
+UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
 
 
 #
@@ -63,7 +67,7 @@ ALL_LINUX_TOOLS_DEBS = $(foreach DIST,$(DISTS),\
 .PHONY: linux.deb
 linux.deb: $(ALL_LINUX_DEBS)
 
-pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz
+stamps/%/linux.deb: stamps/linux.dsc pbuilder/%/base.tgz
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -77,8 +81,10 @@ pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz
 	        linux/linux_*.dsc
 
 	# move built files to the deb archive
-	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb dists/$(*D)/main/udeb/binary-$(*F)
-	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb dists/$(*D)/main/binary-$(*F)
+	install -d --mode 0755 $(UDEB_DIR)
+	install -d --mode 0755 $(DEB_DIR)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb $(UDEB_DIR)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
 
 	# update the deb archive
 	rm -f $$(find dists/$(*D)/ -name 'Contents*')
@@ -88,30 +94,35 @@ pbuilder/%/.stamp-linux.deb: linux/.stamp-linux.dsc pbuilder/%/base.tgz
 	apt-ftparchive -c release-$(*D).conf release dists/$(*D)/ > dists/$(*D)/Release
 	gpg --sign --default-key=$(ARCHIVE_SIGNING_KEY) -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
 
+	mkdir $(shell dirname $@)
 	touch $@
 
 
 .PHONY: linux.dsc
 linux.dsc: $(ALL_LINUX_DSCS)
 
-dists/%/main/source/.stamp-linux.dsc: linux/.stamp-linux.dsc
-	install --directory $(shell dirname $@)/
-	install --mode 644 linux/linux_$(LINUX_VERSION)*.debian.tar.xz   $(shell dirname $@)/
-	install --mode 644 linux/linux_$(LINUX_VERSION)*.dsc             $(shell dirname $@)/
-	install --mode 644 linux/linux_$(LINUX_VERSION)*_source.changes  $(shell dirname $@)/
-	install --mode 644 linux/linux_$(LINUX_VERSION)*.orig.tar.xz     $(shell dirname $@)/
+stamps/%/linux.dsc: stamps/linux.dsc
+	install --mode 0755 --directory dists/$*/main/source
+	install --mode 0644 linux/linux_$(LINUX_VERSION)*.debian.tar.xz   dists/$*/main/source
+	install --mode 0644 linux/linux_$(LINUX_VERSION)*.dsc             dists/$*/main/source
+	install --mode 0644 linux/linux_$(LINUX_VERSION)*_source.changes  dists/$*/main/source
+	install --mode 0644 linux/linux_$(LINUX_VERSION)*.orig.tar.xz     dists/$*/main/source
+
+	mkdir -p $(shell dirname $@)
 	touch $@
 
 # Prepare the linux sources and the debian packaging, then make the dsc.
 # FIXME: This emits an ugly error message, basically warning us
 # that this is not an official Debian linux kernel package.
-linux/.stamp-linux.dsc: linux/linux-$(LINUX_VERSION)
+stamps/linux.dsc: linux/linux-$(LINUX_VERSION)
 	cp linux/orig/$(LINUX_TARBALL) linux/
 	( \
 		cd $^; \
 		fakeroot debian/rules source || true; \
 		dpkg-buildpackage -S -us -uc -I; \
 	)
+
+	install --mode 0755 --directory $(shell dirname $@)
 	touch $@
 
 linux/linux-$(LINUX_VERSION): linux/orig/$(LINUX_TARBALL)
@@ -126,14 +137,14 @@ linux/orig/$(LINUX_TARBALL_KERNEL_ORG):
 	(cd $(shell dirname $@); curl -O $(LINUX_TARBALL_URL))
 
 linux/orig/$(LINUX_TARBALL): linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
-	(cd $(shell dirname $@; cp $(LINUX_TARBALL_KERNEL_ORG) $(LINUX_TARBALL))
+	(cd $(shell dirname $@); cp $(LINUX_TARBALL_KERNEL_ORG) $(LINUX_TARBALL))
 
 # this removes everything but the upstream tarball
 .PHONY: clean-kernel
 clean-kernel:
 	rm -rf linux/linux-$(LINUX_VERSION)
 	rm -f linux/linux_$(LINUX_VERSION)*
-	rm -f linux/.stamp-linux.dsc
+	rm -f $(ALL_LINUX_DSCS) stamps/linux.dsc
 
 
 #
@@ -143,7 +154,7 @@ clean-kernel:
 .PHONY: linux-tools.deb
 linux-tools.deb: $(ALL_LINUX_TOOLS_DEBS)
 
-pbuilder/%/.stamp-linux-tools.deb: linux-tools/.stamp-linux-tools.dsc pbuilder/%/base.tgz
+stamps/%/linux-tools.deb: stamps/linux-tools.dsc pbuilder/%/base.tgz
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -157,8 +168,8 @@ pbuilder/%/.stamp-linux-tools.deb: linux-tools/.stamp-linux-tools.dsc pbuilder/%
 	        linux-tools/linux-tools_*.dsc
 
 	# move built files to the deb archive
-	install -d --mode 0755 dists/$(*D)/main/binary-$(*F)
-	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb dists/$(*D)/main/binary-$(*F)
+	install -d --mode 0755 $(DEB_DIR)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
 
 	# update the deb archive
 	rm -f $$(find dists/$(*D)/ -name 'Contents*')
@@ -167,23 +178,24 @@ pbuilder/%/.stamp-linux-tools.deb: linux-tools/.stamp-linux-tools.dsc pbuilder/%
 	apt-ftparchive generate generate-$(*D).conf
 	apt-ftparchive -c release-$(*D).conf release dists/$(*D)/ > dists/$(*D)/Release
 	gpg --sign --default-key=$(ARCHIVE_SIGNING_KEY) -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
-
+	mkdir -p $(shell dirname $@)
 	touch $@
 
 
 .PHONY: linux-tools.dsc
 linux-tools.dsc: $(ALL_LINUX_TOOLS_DSCS)
 
-dists/%/main/source/.stamp-linux-tools.dsc: linux-tools/.stamp-linux-tools.dsc
-	install --directory $(shell dirname $@)/
+stamps/%/linux-tools.dsc: stamps/linux-tools.dsc
+	install --mode 0755 --directory $(shell dirname $@)/
 	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2.debian.tar.xz  $(shell dirname $@)
 	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2.dsc            $(shell dirname $@)
 	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2_source.changes $(shell dirname $@)
 	install --mode 0644 linux-tools/linux-tools_3.4.orig.tar.xz              $(shell dirname $@)
+	mkdir -p $(shell dirname $@)
 	touch $@
 
 # The "./debian/rules debian/control" step will fail; read output
-linux-tools/.stamp-linux-tools.dsc: linux-tools/linux-tools/debian/rules linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
+stamps/linux-tools.dsc: linux-tools/linux-tools/debian/rules linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 	( \
 		cd linux-tools/linux-tools; \
 		./debian/bin/genorig.py ../../linux/orig/$(LINUX_TARBALL_KERNEL_ORG); \
@@ -192,6 +204,7 @@ linux-tools/.stamp-linux-tools.dsc: linux-tools/linux-tools/debian/rules linux/o
 		./debian/rules clean; \
 		dpkg-buildpackage -S -us -uc -I; \
 	)
+	mkdir -p $(shell dirname $@)
 	touch $@
 
 linux-tools/linux-tools/debian/rules: linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
