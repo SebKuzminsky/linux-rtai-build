@@ -22,9 +22,9 @@ when the debian/ directory does not exist, and is left alone otherwise.
 The git repo & branch the the debian/ directory is initialized to (if
 it does not exist) are configured at the top of the top-level Makefile.
 
-The original debian/ packaging (for Linux 3.4.87 and rtai
-4.0-shabby-111-g44557fc) was created from the Debian kernel packaging
-repo:
+The original debian/ packaging for Linux 3.4.87 with the rtai
+4.0-shabby-111-g44557fc kernel patch was created from the Debian kernel
+packaging repo:
 
     http://anonscm.debian.org/viewvc/kernel/
 
