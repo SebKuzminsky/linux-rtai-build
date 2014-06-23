@@ -94,7 +94,7 @@ stamps/%/linux.deb: stamps/linux.dsc pbuilder/%/base.tgz
 	apt-ftparchive -c release-$(*D).conf release dists/$(*D)/ > dists/$(*D)/Release
 	gpg --sign --default-key=$(ARCHIVE_SIGNING_KEY) -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
 
-	mkdir $(shell dirname $@)
+	mkdir -p $(shell dirname $@)
 	touch $@
 
 
