@@ -154,7 +154,7 @@ pbuilder/%/.stamp-linux-tools.deb: linux-tools/.stamp-linux-tools.dsc pbuilder/%
 	        linux-tools/linux-tools_*.dsc
 
 	# move built files to the deb archive
-	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb dists/$(*D)/main/udeb/binary-$(*F)
+	install -d --mode 0755 dists/$(*D)/main/binary-$(*F)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb dists/$(*D)/main/binary-$(*F)
 
 	# update the deb archive
