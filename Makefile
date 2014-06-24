@@ -225,6 +225,36 @@ linux-tools/linux-tools/debian/rules: linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 # rtai
 #
 
+.PHONY: rtai.deb
+rtai.deb: $(ALL_RTAI_DEBS)
+
+stamps/%/rtai.deb: rtai.dsc pbuilder/%/base.tgz
+	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
+	sudo \
+	    DIST=$(*D) \
+	    ARCH=$(*F) \
+	    TOPDIR=$(shell pwd) \
+	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
+	    pbuilder \
+	        --build \
+	        --configfile pbuilderrc \
+	        --basetgz pbuilder/$(*D)/$(*F)/base.tgz \
+	        rtai_*.dsc
+
+	# move built files to the deb archive
+	install -d --mode 0755 $(DEB_DIR)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
+
+	# update the deb archive
+	rm -f $$(find dists/$(*D)/ -name 'Contents*')
+	rm -f dists/$(*D)/Release
+	rm -f dists/$(*D)/Release.gpg
+	apt-ftparchive generate generate-$(*D).conf
+	apt-ftparchive -c release-$(*D).conf release dists/$(*D)/ > dists/$(*D)/Release
+	gpg --sign --default-key=$(ARCHIVE_SIGNING_KEY) -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
+	mkdir -p $(shell dirname $@)
+	touch $@
+
 .PHONY: rtai.dsc
 rtai.dsc: $(ALL_RTAI_DSCS)
 
