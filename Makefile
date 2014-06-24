@@ -57,6 +57,13 @@ ALL_LINUX_TOOLS_DEBS = $(foreach DIST,$(DISTS),\
         stamps/$(DIST)/$(ARCH)/linux-tools.deb))
 
 
+ALL_RTAI_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/rtai.dsc)
+
+ALL_RTAI_DEBS = $(foreach DIST,$(DISTS),\
+    $(foreach ARCH,$(ARCHES),\
+        stamps/$(DIST)/$(ARCH)/rtai.deb))
+
+
 DSC_DIR = dists/$*/main/source/
 DEB_DIR = dists/$(*D)/main/binary-$(*F)/
 UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
@@ -218,7 +225,25 @@ linux-tools/linux-tools/debian/rules: linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 # rtai
 #
 
-rtai.dsc: rtai/debian/rules
+.PHONY: rtai.dsc
+rtai.dsc: $(ALL_RTAI_DSCS)
+
+stamps/%/rtai.dsc: stamps/rtai.dsc
+	install --mode 0755 --directory $(DSC_DIR)
+	install --mode 0644 rtai_*.tar.gz         $(DSC_DIR)
+	install --mode 0644 rtai_*.dsc            $(DSC_DIR)
+	install --mode 0644 rtai_*_source.changes $(DSC_DIR)
+	mkdir -p $(shell dirname $@)
+	touch $@
+
+stamps/rtai.dsc: rtai/debian/rules
+	( \
+		cd rtai; \
+		./autogen.sh; \
+		dpkg-buildpackage -S -us -uc -I; \
+	)
+	mkdir -p $(shell dirname $@)
+	touch $@
 
 rtai/debian/rules:
 	git clone $(RTAI_GIT) rtai
