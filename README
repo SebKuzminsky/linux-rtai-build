@@ -49,7 +49,7 @@ available in the Debian Linux Kernel Handbook:
     http://kernel-handbook.alioth.debian.org/
 
 
-=  linux-tools
+==  linux-tools
 
 The linux-tools packaging is from the upstream debian packaging.
 
