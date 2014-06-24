@@ -51,7 +51,7 @@ BUILDRESULT="pbuilder/${DIST}/${ARCH}/pkgs"
 
 # cache for packages
 APTCACHE="${TOPDIR}/aptcache/${DIST}/${ARCH}/"
-APTCACHEHARDLINK=no
+#APTCACHEHARDLINK=no
 
 # ccache
 CCACHEDIR="${TOPDIR}/ccache"
