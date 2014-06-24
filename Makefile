@@ -33,7 +33,8 @@ LINUX_RTAI_DEBIAN_BRANCH = 3.4.87-rtai
 LINUX_TOOLS_GIT = ssh://highlab.com/home/seb/linux-tools.git
 LINUX_TOOLS_BRANCH = 3.4
 
-RTAI_GIT = https://github.com/SebKuzminsky/rtai.git
+#RTAI_GIT = https://github.com/SebKuzminsky/rtai.git
+RTAI_GIT = ssh://highlab.com/home/seb/rtai.git
 RTAI_BRANCH = prerelease-7
 
 
