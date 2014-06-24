@@ -292,6 +292,8 @@ pbuilder/keyring.gpg:
 	mkdir -p pbuilder
 	gpg --keyserver hkp://keys.gnupg.net --keyring $@ --no-default-keyring --recv-key $(KEY_IDS)
 	gpg --armor --export $(ARCHIVE_SIGNING_KEY) | gpg --keyring pbuilder/keyring.gpg --no-default-keyring --import --armor
+	mkdir -p dists
+	gpg --armor --export $(ARCHIVE_SIGNING_KEY) >| dists/archive-signing-key.gpg
 
 .PHONY: clean-pbuilder
 clean-pbuilder:
