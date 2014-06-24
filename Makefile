@@ -305,8 +305,16 @@ clean-pbuilder:
 #
 
 .PHONY: clean
-clean: clean-pbuilder
+clean:
 	rm -rf linux/
-	rm -rf aptcache/
-	# git clean -fdx .
+	rm -rf linux-tools/
+	rm -rf rtai/
+	rm -rf dists/
+	rm -rf pbuilder/*/*/pkgs/
+	rm -rf stamps/
+
+.PHONY: super-clean
+super-clean: clean
+	sudo rm -rf aptcache/
+	sudo rm -rf ccache/
 
