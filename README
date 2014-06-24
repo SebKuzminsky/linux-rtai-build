@@ -122,13 +122,15 @@ My old rtai debs were based on:
 
 = Old notes to self
 
-To build all debs:
+== linux
 
-    DEB_BUILD_OPTIONS=parallel=$(($(nproc)*2)) fakeroot debian/rules binary
+    To build all debs:
 
-To build just a particular deb:
+        DEB_BUILD_OPTIONS=parallel=$(($(nproc)*2)) fakeroot debian/rules binary
 
-    DEB_BUILD_OPTIONS=parallel=$(($(nproc)*2)) fakeroot make -f debian/rules.gen binary-arch_amd64_rtai   
+    To build just a particular deb:
+
+        DEB_BUILD_OPTIONS=parallel=$(($(nproc)*2)) fakeroot make -f debian/rules.gen binary-arch_amd64_rtai   
 
 
 = Open Issues
