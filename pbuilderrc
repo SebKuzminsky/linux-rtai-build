@@ -36,7 +36,7 @@ APTKEYRINGS=("${APTKEYRINGS[@]}" "$KEYRING")
 DISTRIBUTION=${DIST}
 
 # Base tarball
-#BASETGZ="${TOPDIR}/${DIST}/${ARCH}/base.tgz"
+BASETGZ="${TOPDIR}/pbuilder/${DIST}/${ARCH}/base.tgz"
 #BASETGZ="pbuilder/${DIST}/${ARCH}/base.tgz"
 
 # Where to build

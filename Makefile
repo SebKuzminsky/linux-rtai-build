@@ -86,7 +86,6 @@ stamps/%/linux.deb: linux.dsc pbuilder/%/base.tgz
 	    pbuilder \
 	        --build \
 	        --configfile pbuilderrc \
-	        --basetgz pbuilder/$(*D)/$(*F)/base.tgz \
 	        linux/linux_*.dsc
 
 	# move built files to the deb archive
@@ -172,7 +171,6 @@ stamps/%/linux-tools.deb: linux-tools.dsc pbuilder/%/base.tgz
 	    pbuilder \
 	        --build \
 	        --configfile pbuilderrc \
-	        --basetgz pbuilder/$(*D)/$(*F)/base.tgz \
 	        linux-tools/linux-tools_*.dsc
 
 	# move built files to the deb archive
@@ -238,7 +236,6 @@ stamps/%/rtai.deb: rtai.dsc pbuilder/%/base.tgz
 	    pbuilder \
 	        --build \
 	        --configfile pbuilderrc \
-	        --basetgz pbuilder/$(*D)/$(*F)/base.tgz \
 	        rtai_*.dsc
 
 	# move built files to the deb archive
@@ -286,9 +283,10 @@ rtai/debian/rules:
 
 # Base chroot tarballs are named e.g. pbuilder/lucid/i386/base.tgz
 # in this case, $(*D) = lucid; $(*F) = i386
+.PRECIOUS: pbuilder/%/base.tgz
 pbuilder/%/base.tgz: pbuilder/keyring.gpg
 	mkdir -p pbuilder/$(*D)/$(*F)
-	sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --create --basetgz $@ --configfile pbuilderrc
+	sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --create --configfile pbuilderrc
 
 pbuilder/keyring.gpg:
 	mkdir -p pbuilder
