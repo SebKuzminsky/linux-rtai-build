@@ -296,7 +296,6 @@ pbuilder/keyring.gpg:
 
 .PHONY: clean-pbuilder
 clean-pbuilder:
-	sudo rm -rf pbuilder/aptcache
 	rm -rf pbuilder/
 
 
