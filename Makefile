@@ -283,6 +283,7 @@ rtai/debian/rules:
 
 # Base chroot tarballs are named e.g. pbuilder/lucid/i386/base.tgz
 # in this case, $(*D) = lucid; $(*F) = i386
+# FIXME: probably need to create an empty dist hierarchy first
 .PRECIOUS: pbuilder/%/base.tgz
 pbuilder/%/base.tgz: pbuilder/keyring.gpg
 	mkdir -p pbuilder/$(*D)/$(*F)
