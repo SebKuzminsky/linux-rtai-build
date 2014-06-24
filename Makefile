@@ -293,6 +293,7 @@ pbuilder/%/base.tgz: pbuilder/keyring.gpg
 pbuilder/keyring.gpg:
 	mkdir -p pbuilder
 	gpg --keyserver hkp://keys.gnupg.net --keyring $@ --no-default-keyring --recv-key $(KEY_IDS)
+	gpg --armor --export $(ARCHIVE_SIGNING_KEY) | gpg --keyring pbuilder/keyring.gpg --no-default-keyring --import --armor
 
 .PHONY: clean-pbuilder
 clean-pbuilder:
