@@ -69,6 +69,57 @@ Cherry-picked 784d0fc795fb7b8b9f6a6186335caa171c16225c (adds .tar.xz
 support).
 
 
+== RTAI
+
+I'm choosing to base my debs on the ShabbyX RTAI repo:
+https://github.com/ShabbyX/RTAI.git
+
+=== The RTAI packages in Ubuntu and Debian are no good
+
+precise: 3.8.1
+trusty: 3.9.1 (kernel patches are too old)
+
+wheezy: 3.8.1
+sid: 3.9.1
+
+These packages provide the RTAI userspace libraries and headers as binary
+debs, but provide the kernel modules only in source form.  These kernel
+sources are to be built with module-assistant, but it doesn't work out
+of the box for me, and i've no interest in taking this path.
+
+=== RTAI for LinuxCNC
+
+My old (3.4.55-rtai-2) shitty rtai kernel debs are of commit
+a0dc5355ee233032926dd23d1e132ef1befbbd76.  That commit used to be in the
+master branch, now it's in a branch called "old-master".  It looks like
+master was rebased and that commit corresponds to 223f5d73 now.
+
+My branch is called prerelease-7.
+
+A reasonable version number for it would be
+"3.9-shabby-memleak-2013.12.13"
+
+My old rtai debs were based on:
+
+    mozmck's (jepler's?) old debianization of rtai
+
+    make-kpkg to build the kernel deb
+
+    My process:
+
+        fetch the rtai git repo
+
+        fetch the linux tarball
+
+        apply rtai patch to linux source
+
+        build linux debs with make-kpkg
+
+        install linux-headers
+
+        build rtai-modules
+
+
 = Old notes to self
 
 To build all debs:
