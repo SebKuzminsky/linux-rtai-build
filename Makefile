@@ -266,6 +266,9 @@ stamps/%/rtai.dsc: stamps/rtai.dsc
 	touch $@
 
 stamps/rtai.dsc: rtai/debian/rules.in
+	rm -f rtai_*.tar.gz
+	rm -f rtai_*.dsc
+	rm -f rtai_*_source.changes
 	( \
 		cd rtai; \
 		debian/configure $(LINUX_IMAGE_VERSION); \
