@@ -18,6 +18,8 @@ ARCHIVE_SIGNING_KEY = 'Linux/RTAI deb archive signing key'
 
 LINUX_VERSION = 3.4.87
 
+LINUX_IMAGE_VERSION = 3.4-9-rtai-686-pae
+
 # this is the URL of the tarball at kernel.org
 LINUX_TARBALL_URL = https://www.kernel.org/pub/linux/kernel/v3.x/linux-$(LINUX_VERSION).tar.xz
 
@@ -263,16 +265,18 @@ stamps/%/rtai.dsc: stamps/rtai.dsc
 	mkdir -p $(shell dirname $@)
 	touch $@
 
-stamps/rtai.dsc: rtai/debian/rules
+stamps/rtai.dsc: rtai/debian/rules.in
 	( \
 		cd rtai; \
+		debian/configure $(LINUX_IMAGE_VERSION); \
+		debian/update-dch-from-git; \
 		./autogen.sh; \
 		dpkg-buildpackage -S -us -uc -I; \
 	)
 	mkdir -p $(shell dirname $@)
 	touch $@
 
-rtai/debian/rules:
+rtai/debian/rules.in:
 	git clone $(RTAI_GIT) rtai
 	(cd rtai; git checkout $(RTAI_BRANCH))
 
