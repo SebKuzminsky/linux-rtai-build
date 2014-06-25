@@ -96,13 +96,7 @@ stamps/%/linux.deb: linux.dsc pbuilder/%/base.tgz
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb $(UDEB_DIR)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
 
-	# update the deb archive
-	rm -f $$(find dists/$(*D)/ -name 'Contents*')
-	rm -f dists/$(*D)/Release
-	rm -f dists/$(*D)/Release.gpg
-	apt-ftparchive generate generate-$(*D).conf
-	apt-ftparchive -c release-$(*D).conf release dists/$(*D)/ > dists/$(*D)/Release
-	gpg --sign --default-key=$(ARCHIVE_SIGNING_KEY) -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
+	update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
 
 	mkdir -p $(shell dirname $@)
 	touch $@
@@ -179,13 +173,8 @@ stamps/%/linux-tools.deb: linux-tools.dsc pbuilder/%/base.tgz
 	install -d --mode 0755 $(DEB_DIR)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
 
-	# update the deb archive
-	rm -f $$(find dists/$(*D)/ -name 'Contents*')
-	rm -f dists/$(*D)/Release
-	rm -f dists/$(*D)/Release.gpg
-	apt-ftparchive generate generate-$(*D).conf
-	apt-ftparchive -c release-$(*D).conf release dists/$(*D)/ > dists/$(*D)/Release
-	gpg --sign --default-key=$(ARCHIVE_SIGNING_KEY) -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
+	update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
+
 	mkdir -p $(shell dirname $@)
 	touch $@
 
@@ -244,13 +233,8 @@ stamps/%/rtai.deb: rtai.dsc pbuilder/%/base.tgz
 	install -d --mode 0755 $(DEB_DIR)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
 
-	# update the deb archive
-	rm -f $$(find dists/$(*D)/ -name 'Contents*')
-	rm -f dists/$(*D)/Release
-	rm -f dists/$(*D)/Release.gpg
-	apt-ftparchive generate generate-$(*D).conf
-	apt-ftparchive -c release-$(*D).conf release dists/$(*D)/ > dists/$(*D)/Release
-	gpg --sign --default-key=$(ARCHIVE_SIGNING_KEY) -ba -o dists/$(*D)/Release.gpg dists/$(*D)/Release
+	update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
+
 	mkdir -p $(shell dirname $@)
 	touch $@
 
