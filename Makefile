@@ -96,7 +96,7 @@ stamps/%/linux.deb: linux.dsc pbuilder/%/base.tgz
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb $(UDEB_DIR)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
 
-	update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
 
 	mkdir -p $(shell dirname $@)
 	touch $@
@@ -173,7 +173,7 @@ stamps/%/linux-tools.deb: linux-tools.dsc pbuilder/%/base.tgz
 	install -d --mode 0755 $(DEB_DIR)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
 
-	update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
 
 	mkdir -p $(shell dirname $@)
 	touch $@
@@ -233,7 +233,7 @@ stamps/%/rtai.deb: rtai.dsc pbuilder/%/base.tgz
 	install -d --mode 0755 $(DEB_DIR)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
 
-	update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
 
 	mkdir -p $(shell dirname $@)
 	touch $@
