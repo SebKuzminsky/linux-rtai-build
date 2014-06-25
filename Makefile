@@ -275,10 +275,14 @@ rtai/debian/rules.in:
 # Base chroot tarballs are named e.g. pbuilder/lucid/i386/base.tgz
 # in this case, $(*D) = lucid; $(*F) = i386
 # FIXME: probably need to create an empty dist hierarchy first
-.PRECIOUS: pbuilder/%/base.tgz
-pbuilder/%/base.tgz: pbuilder/keyring.gpg
-	mkdir -p pbuilder/$(*D)/$(*F)
-	sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --create --configfile pbuilderrc
+.PHONY: pbuilder/%/base.tgz
+pbuilder/%/base.tgz: pbuilder/keyring.gpg stamps/%/deb-archive
+	if [ -f pbuilder/$(*D)/$(*F)/base.tgz ]; then \
+		sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --update --configfile pbuilderrc; \
+	else \
+		mkdir -p pbuilder/$(*D)/$(*F); \
+		sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --create --configfile pbuilderrc; \
+	fi
 
 pbuilder/keyring.gpg:
 	mkdir -p pbuilder
