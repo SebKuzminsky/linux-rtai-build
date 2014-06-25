@@ -12,7 +12,7 @@ apt-ftparchive -c apt-ftparchive.conf generate generate-$DIST.conf
 
 apt-ftparchive -c release-$DIST.conf release dists/$DIST/ >| dists/$DIST/Release
 
-gpg --sign --default-key=$KEY -ba -o dists/$DIST/Release.gpg dists/$DIST/Release
+gpg --sign --default-key="$KEY" -ba -o dists/$DIST/Release.gpg dists/$DIST/Release
 
 mkdir -p stamps/$DIST/$ARCH
 touch stamps/$DIST/$ARCH/deb-archive
