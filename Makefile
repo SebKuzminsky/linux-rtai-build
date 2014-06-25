@@ -9,6 +9,8 @@
 DISTS ?= wheezy
 ARCHES ?= i386
 
+LINUX_IMAGE_VERSION ?= 3.4-9-rtai-686-pae
+
 ARCHIVE_SIGNING_KEY = 'Linux/RTAI deb archive signing key'
 
 #
@@ -17,8 +19,6 @@ ARCHIVE_SIGNING_KEY = 'Linux/RTAI deb archive signing key'
 #
 
 LINUX_VERSION = 3.4.87
-
-LINUX_IMAGE_VERSION = 3.4-9-rtai-686-pae
 
 # this is the URL of the tarball at kernel.org
 LINUX_TARBALL_URL = https://www.kernel.org/pub/linux/kernel/v3.x/linux-$(LINUX_VERSION).tar.xz
