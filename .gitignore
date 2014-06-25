@@ -8,3 +8,4 @@ tmp/
 aptcache/
 dists/
 ccache/
+packages-*.db
