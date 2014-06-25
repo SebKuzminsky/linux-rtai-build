@@ -227,7 +227,7 @@ stamps/%/rtai.deb: rtai.dsc pbuilder/%/base.tgz
 	    pbuilder \
 	        --build \
 	        --configfile pbuilderrc \
-	        rtai_*.dsc
+	        dists/$(*D)/main/source/rtai_*.dsc
 
 	# move built files to the deb archive
 	install -d --mode 0755 $(DEB_DIR)
@@ -243,6 +243,9 @@ rtai.dsc: $(ALL_RTAI_DSCS)
 
 stamps/%/rtai.dsc: stamps/rtai.dsc
 	install --mode 0755 --directory $(DSC_DIR)
+	rm -f $(DSC_DIR)/rtai_*.tar.gz
+	rm -f $(DSC_DIR)/rtai_*.dsc
+	rm -f $(DSC_DIR)/rtai_*_source.changes
 	install --mode 0644 rtai_*.tar.gz         $(DSC_DIR)
 	install --mode 0644 rtai_*.dsc            $(DSC_DIR)
 	install --mode 0644 rtai_*_source.changes $(DSC_DIR)
