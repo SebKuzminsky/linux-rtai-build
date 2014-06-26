@@ -92,9 +92,10 @@ of the box for me, and i've no interest in taking this path.
 My old (3.4.55-rtai-2) shitty rtai kernel debs are of commit
 a0dc5355ee233032926dd23d1e132ef1befbbd76.  That commit used to be in the
 master branch, now it's in a branch called "old-master".  It looks like
-master was rebased and that commit corresponds to 223f5d73 now.
+master was rebased and that commit corresponds to 223f5d73 (in master) now.
 
-My branch is called prerelease-7.
+My branch is called prerelease-7, but it doesnt work so use old-3.9-debs
+instead.
 
 A reasonable version number for it would be
 "3.9-shabby-memleak-2013.12.13"
@@ -179,4 +180,9 @@ The .orig.tar.xz is the same but the other files have different md5sums.
 == build rtai-modules for the rtai-486 linux-image package
 
 == try to get amd64 going again
+
+64-bit math problems:
+* http://psha.org.ru/irc/%23emc-devel/2014-03-25.html#23:10:36
+* http://article.gmane.org/gmane.linux.real-time.rtai/22724
+* http://article.gmane.org/gmane.linux.real-time.rtai/26416
 
