@@ -1,4 +1,30 @@
 
+= Linux/RTAI debian package builder
+
+This is a big clumsy system for building debian packages of the Linux
+kernel patched with RTAI, and the RTAI userspace.
+
+It is inspired by John Morris' similar build system.
+
+At the top level (the repo you're looking at right now) there's a Makefile
+that knows how to fetch various hacked upstream sources and build debs
+from them.
+
+This Makefile does all building inside pbuilder chroots.
+
+The things it fetches and builds are:
+
+    * linux (tarball from kernel.org, debian/ directory from seb's repo
+        based on debian.org's svn repo)
+
+    * linux-tools (used for building out-of-tree kernel modules, we use
+        a specific version of debian.org's package, plus some minor
+        tweaks)
+
+    * rtai (based on the ShabbyX repo, but a special branch that adds
+        debian packaging)
+
+
 = Using this system to build Linux/RTAI
 
 First build the linux kernel.  This uses the kernel.org tarball, with
