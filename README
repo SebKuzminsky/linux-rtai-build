@@ -159,7 +159,24 @@ tar: 0x00000005: Cannot stat: No such file or directory
 ... (and lots more)
 -----
 
+Try the kernel-wedge package fromn Wheezy?
+
 == Why does pbuilder re-create the dsc, but differently?
 
 The .orig.tar.xz is the same but the other files have different md5sums.
+
+== Clean up all the git repos
+
+* linux/debian
+* linux-tools/debian
+* rtai
+* linux-rtai-deb-builder
+
+== Rebuild everything from scratch to find startup transients
+
+== Figure out what version of rtai to build
+
+== build rtai-modules for the rtai-486 linux-image package
+
+== try to get amd64 going again
 
