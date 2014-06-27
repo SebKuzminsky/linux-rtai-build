@@ -20,6 +20,20 @@ ARCHIVE_SIGNING_KEY = 'Linux/RTAI deb archive signing key'
 
 
 #
+# kernel-wedge, needed by Precise to build the linux kernel
+#
+
+KERNEL_WEDGE_GIT = git://git.debian.org/d-i/kernel-wedge.git
+KERNEL_WEDGE_BRANCH = 2.84
+
+ALL_KERNEL_WEDGE_DSCS = $(foreach DIST,precise,stamps/$(DIST)/kernel-wedge.dsc)
+
+ALL_KERNEL_WEDGE_DEBS = $(foreach DIST,precise,\
+    $(foreach ARCH,$(ARCHES),\
+        stamps/$(DIST)/$(ARCH)/kernel-wedge.deb))
+
+
+#
 # linux
 #
 
@@ -79,6 +93,66 @@ ALL_RTAI_DEBS = $(foreach DIST,$(DISTS),\
 DSC_DIR = dists/$*/main/source/
 DEB_DIR = dists/$(*D)/main/binary-$(*F)/
 UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
+
+
+#
+# kernel-wedge rules
+#
+
+.PHONY: kernel-wedge.deb
+kernel-wedge.deb: $(ALL_KERNEL_WEDGE_DEBS)
+
+stamps/%/kernel-wedge.deb: kernel-wedge.dsc pbuilder/%/base.tgz
+	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
+	sudo \
+	    DIST=$(*D) \
+	    ARCH=$(*F) \
+	    TOPDIR=$(shell pwd) \
+	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
+	    pbuilder \
+	        --build \
+	        --configfile pbuilderrc \
+	        kernel-wedge/kernel-wedge*.dsc
+
+	# move built files to the deb archive
+	install -d --mode 0755 $(UDEB_DIR)
+	install -d --mode 0755 $(DEB_DIR)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb $(UDEB_DIR)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
+
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
+
+	mkdir -p $(shell dirname $@)
+	touch $@
+
+
+.PHONY: kernel-wedge.dsc
+kernel-wedge.dsc: $(ALL_KERNEL_WEDGE_DSCS)
+
+stamps/%/kernel-wedge.dsc: stamps/kernel-wedge.dsc
+	install --mode 0755 --directory $(DSC_DIR)
+	install --mode 0644 kernel-wedge/kernel-wedge_*.dsc            $(DSC_DIR)
+	install --mode 0644 kernel-wedge/kernel-wedge_*_source.changes $(DSC_DIR)
+	install --mode 0644 kernel-wedge/kernel-wedge_*.tar.gz         $(DSC_DIR)
+	mkdir -p $(shell dirname $@)
+	touch $@
+
+stamps/kernel-wedge.dsc: kernel-wedge/kernel-wedge
+	( \
+		cd $^; \
+		dpkg-buildpackage -S -us -uc -I; \
+	)
+
+	install --mode 0755 --directory $(shell dirname $@)
+	touch $@
+
+kernel-wedge/kernel-wedge:
+	mkdir -p kernel-wedge
+	cd kernel-wedge; git clone $(KERNEL_WEDGE_GIT)
+	cd kernel-wedge/kernel-wedge; git checkout $(KERNEL_WEDGE_BRANCH)
+
+clean-kernel-wedge:
+	rm -rf kernel-wedge
 
 
 #
