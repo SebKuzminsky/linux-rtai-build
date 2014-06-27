@@ -18,6 +18,11 @@ ARCHIVE_SIGNING_KEY = 'Linux/RTAI deb archive signing key'
 # version of Linux or RTAI.
 #
 
+
+#
+# linux
+#
+
 LINUX_VERSION = 3.4.87
 
 # this is the URL of the tarball at kernel.org
