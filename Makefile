@@ -313,6 +313,9 @@ clean-pbuilder:
 # misc rules
 #
 
+stamps/%/deb-archive:
+	mkdir -p dists/$(*D)/$(*F)/{source,binary-{i386,amd64}}
+
 .PHONY: clean
 clean:
 	rm -rf linux/
