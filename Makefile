@@ -462,7 +462,9 @@ clean-pbuilder:
 #
 
 stamps/%/deb-archive:
-	mkdir -p dists/$(*D)/$(*F)/{source,binary-{i386,amd64}}
+	mkdir -p dists/$(*D)/main/source
+	mkdir -p dists/$(*D)/main/binary-$(*F)/
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
 
 .PHONY: clean
 clean:
