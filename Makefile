@@ -375,7 +375,7 @@ linux-tools/linux-tools/debian/rules: linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 .PHONY: rtai.deb
 rtai.deb: $(ALL_RTAI_DEBS)
 
-stamps/%/rtai.deb: rtai.dsc pbuilder/%/base.tgz
+stamps/%/rtai.deb: stamps/%/rtai.dsc pbuilder/%/base.tgz
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
