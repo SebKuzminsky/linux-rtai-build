@@ -20,7 +20,8 @@ ARCHIVE_SIGNING_KEY = 'Linux/RTAI deb archive signing key'
 
 
 #
-# kernel-wedge, needed by Precise to build the linux kernel
+# kernel-wedge, needed by Precise to build the debian.org packaging of the
+# linux kernel
 #
 
 KERNEL_WEDGE_GIT = git://git.debian.org/d-i/kernel-wedge.git
@@ -115,9 +116,7 @@ stamps/%/kernel-wedge.deb: kernel-wedge.dsc pbuilder/%/base.tgz
 	        kernel-wedge/kernel-wedge*.dsc
 
 	# move built files to the deb archive
-	install -d --mode 0755 $(UDEB_DIR)
 	install -d --mode 0755 $(DEB_DIR)
-	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb $(UDEB_DIR)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
 
 	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
