@@ -212,3 +212,8 @@ The .orig.tar.xz is the same but the other files have different md5sums.
 * http://article.gmane.org/gmane.linux.real-time.rtai/22724
 * http://article.gmane.org/gmane.linux.real-time.rtai/26416
 
+== what's up with hyperv?
+
+Why isn't hid-hyperv getting built any more?  It's in the 3.4.87 kernel,
+and i didn't change the config.  There are other hyperv modules getting built.
+
