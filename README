@@ -186,7 +186,14 @@ tar: 0x00000005: Cannot stat: No such file or directory
 ... (and lots more)
 -----
 
-Try the kernel-wedge package fromn Wheezy?
+Looks like modules.dep isn't in the expected format?  Or confused somehow.
+It's created by depmod; precise uses module-init-tools 3.16, wheezy uses
+kmod 9-3.  Ubuntu went to kmod with Raring.
+
+Tried the kernel-wedge package from Wheezy, that didn't fix it.
+
+Build the kmod package from Wheezy, for Precise.  That fixed it.
+
 
 == Why does pbuilder re-create the dsc, but differently?
 
