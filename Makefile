@@ -35,6 +35,21 @@ ALL_KERNEL_WEDGE_DEBS = $(foreach DIST,precise,\
 
 
 #
+# kmod, replaces module-init-tools, needed by Precise to build the
+# debian.org packaging of the linux kernel
+#
+
+KMOD_GIT = git://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git
+KMOD_BRANCH = v9
+
+ALL_KMOD_DSCS = $(foreach DIST,precise,stamps/$(DIST)/kmod.dsc)
+
+ALL_KMOD_DEBS = $(foreach DIST,precise,\
+    $(foreach ARCH,$(ARCHES),\
+        stamps/$(DIST)/$(ARCH)/kmod.deb))
+
+
+#
 # linux
 #
 
@@ -152,6 +167,66 @@ kernel-wedge/kernel-wedge:
 
 clean-kernel-wedge:
 	rm -rf kernel-wedge
+
+
+
+
+#
+# kmod rules
+#
+
+.PHONY: kmod.deb
+kmod.deb: $(ALL_KMOD_DEBS)
+
+stamps/%/kmod.deb: kmod.dsc pbuilder/%/base.tgz
+	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
+	sudo \
+	    DIST=$(*D) \
+	    ARCH=$(*F) \
+	    TOPDIR=$(shell pwd) \
+	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
+	    pbuilder \
+	        --build \
+	        --configfile pbuilderrc \
+	        kmod/kmod_*.dsc
+
+	# move built files to the deb archive
+	install -d --mode 0755 $(DEB_DIR)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
+
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
+
+	mkdir -p $(shell dirname $@)
+	touch $@
+
+
+.PHONY: kmod.dsc
+kmod.dsc: $(ALL_KMOD_DSCS)
+
+stamps/%/kmod.dsc: stamps/kmod.dsc
+	install --mode 0755 --directory $(DSC_DIR)
+	install --mode 0644 kmod/kmod_*.dsc            $(DSC_DIR)
+	install --mode 0644 kmod/kmod_*.debian.tar.gz  $(DSC_DIR)
+	install --mode 0644 kmod/kmod_*.orig.tar.xz    $(DSC_DIR)
+	mkdir -p $(shell dirname $@)
+	touch $@
+
+stamps/kmod.dsc: kmod/kmod
+	( \
+		cd $^; \
+		dpkg-buildpackage -S -us -uc -I; \
+	)
+
+	install --mode 0755 --directory $(shell dirname $@)
+	touch $@
+
+kmod/kmod:
+	mkdir -p kmod
+	cd kmod; git clone $(KMOD_GIT)
+	cd kmod/kmod; git checkout $(KMOD_BRANCH)
+
+clean-kmod:
+	rm -rf kmod
 
 
 #
