@@ -106,7 +106,7 @@ ALL_RTAI_DEBS = $(foreach DIST,$(DISTS),\
         stamps/$(DIST)/$(ARCH)/rtai.deb))
 
 
-DSC_DIR = dists/$*/main/source/
+DSC_DIR = dists/$(*D)/main/source/
 DEB_DIR = dists/$(*D)/main/binary-$(*F)/
 UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
 
