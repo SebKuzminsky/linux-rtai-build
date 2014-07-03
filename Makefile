@@ -287,13 +287,18 @@ stamps/%/linux.dsc: stamps/linux.dsc
 # FIXME: This emits an ugly error message, basically warning us
 # that this is not an official Debian linux kernel package.
 stamps/linux.dsc: linux/linux-$(LINUX_VERSION)
+	rm -f linux/linux_*.debian.tar.xz
+	rm -f linux/linux_*.dsc
+	rm -f linux/linux_*_source.changes
+	rm -f linux/linux_*.orig.tar.xz
+	
 	cp linux/orig/$(LINUX_TARBALL) linux/
 	( \
 		cd $^; \
 		fakeroot debian/rules source || true; \
 		dpkg-buildpackage -S -us -uc -I; \
 	)
-
+	
 	install --mode 0755 --directory $(shell dirname $@)
 	touch $@
 
