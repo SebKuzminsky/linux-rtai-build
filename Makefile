@@ -128,7 +128,7 @@ UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
 .PHONY: kernel-wedge.deb
 kernel-wedge.deb: $(ALL_KERNEL_WEDGE_DEBS)
 
-stamps/%/kernel-wedge.deb: kernel-wedge.dsc pbuilder/%/base.tgz
+stamps/%/kernel-wedge.deb: stamps/kernel-wedge.dsc.build pbuilder/%/base.tgz
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -138,35 +138,35 @@ stamps/%/kernel-wedge.deb: kernel-wedge.dsc pbuilder/%/base.tgz
 	    pbuilder \
 	        --build \
 	        --configfile pbuilderrc \
-	        kernel-wedge/kernel-wedge*.dsc
-
+	        kernel-wedge/kernel-wedge_*.dsc
+	
 	# move built files to the deb archive
 	install -d --mode 0755 $(DEB_DIR)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
-
+	
 	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
-
+	
 	mkdir -p $(shell dirname $@)
 	touch $@
 
 
 .PHONY: kernel-wedge.dsc
-kernel-wedge.dsc: $(ALL_KERNEL_WEDGE_DSCS)
+kernel-wedge.dsc: clean-kernel-wedge-dsc $(ALL_KERNEL_WEDGE_DSCS)
 
-stamps/%/kernel-wedge.dsc: stamps/kernel-wedge.dsc
+stamps/%/kernel-wedge.dsc: stamps/kernel-wedge.dsc.build
 	install --mode 0755 --directory $(DSC_DIR)
 	install --mode 0644 kernel-wedge/kernel-wedge_*.dsc            $(DSC_DIR)
 	install --mode 0644 kernel-wedge/kernel-wedge_*_source.changes $(DSC_DIR)
 	install --mode 0644 kernel-wedge/kernel-wedge_*.tar.gz         $(DSC_DIR)
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $* source
 	mkdir -p $(shell dirname $@)
 	touch $@
 
-stamps/kernel-wedge.dsc: kernel-wedge/kernel-wedge
+stamps/kernel-wedge.dsc.build: kernel-wedge/kernel-wedge
 	( \
 		cd $^; \
 		dpkg-buildpackage -S -us -uc -I; \
 	)
-
 	install --mode 0755 --directory $(shell dirname $@)
 	touch $@
 
