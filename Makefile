@@ -273,7 +273,7 @@ stamps/%/linux.deb: linux.dsc pbuilder/%/base.tgz
 .PHONY: linux.dsc
 linux.dsc: $(ALL_LINUX_DSCS)
 
-stamps/%/linux.dsc: stamps/linux.dsc
+stamps/%/linux.dsc: stamps/linux.dsc.build
 	install --mode 0755 --directory $(DSC_DIR)
 	install --mode 0644 linux/linux_$(LINUX_VERSION)*.debian.tar.xz   $(DSC_DIR)
 	install --mode 0644 linux/linux_$(LINUX_VERSION)*.dsc             $(DSC_DIR)
@@ -285,7 +285,7 @@ stamps/%/linux.dsc: stamps/linux.dsc
 # Prepare the linux sources and the debian packaging, then make the dsc.
 # FIXME: This emits an ugly error message, basically warning us
 # that this is not an official Debian linux kernel package.
-stamps/linux.dsc: linux/linux-$(LINUX_VERSION)
+stamps/linux.dsc.build: linux/linux-$(LINUX_VERSION)
 	rm -f linux/linux_*.debian.tar.xz
 	rm -f linux/linux_*.dsc
 	rm -f linux/linux_*_source.changes
@@ -320,7 +320,7 @@ linux/orig/$(LINUX_TARBALL): linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 clean-kernel:
 	rm -rf linux/linux-$(LINUX_VERSION)
 	rm -f linux/linux_$(LINUX_VERSION)*
-	rm -f $(ALL_LINUX_DSCS) stamps/linux.dsc
+	rm -f $(ALL_LINUX_DSCS) stamps/linux.dsc.build
 
 
 #
