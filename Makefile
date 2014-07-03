@@ -389,7 +389,7 @@ linux-tools/linux-tools/debian/rules: linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 .PHONY: rtai.deb
 rtai.deb: $(ALL_RTAI_DEBS)
 
-stamps/%/rtai.deb: stamps/%/rtai.dsc pbuilder/%/base.tgz
+stamps/%/rtai.deb: stamps/rtai.dsc.build pbuilder/%/base.tgz
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -399,37 +399,32 @@ stamps/%/rtai.deb: stamps/%/rtai.dsc pbuilder/%/base.tgz
 	    pbuilder \
 	        --build \
 	        --configfile pbuilderrc \
-	        dists/$(*D)/main/source/rtai_*.dsc
-
+	        rtai/rtai_*.dsc
+	
 	# move built files to the deb archive
 	install -d --mode 0755 $(DEB_DIR)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
-
+	
 	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
-
+	
 	mkdir -p $(shell dirname $@)
 	touch $@
 
 .PHONY: rtai.dsc
-rtai.dsc: $(ALL_RTAI_DSCS)
+rtai.dsc: clean-rtai-dsc $(ALL_RTAI_DSCS)
 
-stamps/%/rtai.dsc: stamps/rtai.dsc
+stamps/%/rtai.dsc: stamps/rtai.dsc.build
 	install --mode 0755 --directory $(DSC_DIR)
-	rm -f $(DSC_DIR)/rtai_*.tar.gz
-	rm -f $(DSC_DIR)/rtai_*.dsc
-	rm -f $(DSC_DIR)/rtai_*_source.changes
-	install --mode 0644 rtai_*.tar.gz         $(DSC_DIR)
-	install --mode 0644 rtai_*.dsc            $(DSC_DIR)
+	install --mode 0644 rtai/rtai_*.tar.gz         $(DSC_DIR)
+	install --mode 0644 rtai/rtai_*.dsc            $(DSC_DIR)
 	install --mode 0644 rtai_*_source.changes $(DSC_DIR)
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $* source
 	mkdir -p $(shell dirname $@)
 	touch $@
 
-stamps/rtai.dsc: rtai/debian/rules.in
-	rm -f rtai_*.tar.gz
-	rm -f rtai_*.dsc
-	rm -f rtai_*_source.changes
+stamps/rtai.dsc.build: rtai/rtai/debian/rules.in
 	( \
-		cd rtai; \
+		cd rtai/rtai; \
 		debian/configure $(LINUX_IMAGE_VERSION); \
 		debian/update-dch-from-git; \
 		./autogen.sh; \
@@ -438,9 +433,9 @@ stamps/rtai.dsc: rtai/debian/rules.in
 	mkdir -p $(shell dirname $@)
 	touch $@
 
-rtai/debian/rules.in:
-	git clone $(RTAI_GIT) rtai
-	(cd rtai; git checkout $(RTAI_BRANCH))
+rtai/rtai/debian/rules.in:
+	cd rtai; git clone $(RTAI_GIT) rtai
+	cd rtai/rtai; git checkout $(RTAI_BRANCH)
 
 
 #
