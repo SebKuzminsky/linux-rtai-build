@@ -3,10 +3,7 @@
 # Override these in the environment as you wish.
 #
 
-# re-enable precise when i figure out why the kernel doesnt build
-#DISTS ?= wheezy precise
-
-DISTS ?= wheezy
+DISTS ?= wheezy precise
 ARCHES ?= i386
 
 LINUX_IMAGE_VERSION ?= 3.4-9-rtai-686-pae
