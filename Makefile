@@ -482,6 +482,7 @@ clean-%-dsc:
 	rm -f $*/$*_*.dsc
 	rm -f $*/$*_*_source.changes
 	rm -f $*/$*_*.orig.tar.xz
+	rm -f $*/$*_*.tar.xz
 	rm -f stamps/$*.dsc.build
 
 .PHONY: clean
