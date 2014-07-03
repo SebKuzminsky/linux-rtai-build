@@ -32,7 +32,7 @@ packaging provided by a local git repo based on Debian's packaging of
 the linux kernel.  Our local debian packaging of the linux kernel adds
 the rtai patch and not much else.
 
-Then build linux-tools.
+Then build linux-tools, kmod, and kernel-wedge.
 
 Then build RTAI.
 
