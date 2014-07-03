@@ -277,10 +277,10 @@ linux.dsc: clean-linux-dsc $(ALL_LINUX_DSCS)
 
 stamps/%/linux.dsc: stamps/linux.dsc.build
 	install --mode 0755 --directory $(DSC_DIR)
-	install --mode 0644 linux/linux_$(LINUX_VERSION)*.debian.tar.xz   $(DSC_DIR)
-	install --mode 0644 linux/linux_$(LINUX_VERSION)*.dsc             $(DSC_DIR)
-	install --mode 0644 linux/linux_$(LINUX_VERSION)*_source.changes  $(DSC_DIR)
-	install --mode 0644 linux/linux_$(LINUX_VERSION)*.orig.tar.xz     $(DSC_DIR)
+	install --mode 0644 linux/linux_*.debian.tar.xz   $(DSC_DIR)
+	install --mode 0644 linux/linux_*.dsc             $(DSC_DIR)
+	install --mode 0644 linux/linux_*_source.changes  $(DSC_DIR)
+	install --mode 0644 linux/linux_*.orig.tar.xz     $(DSC_DIR)
 	mkdir -p $(shell dirname $@)
 	touch $@
 
