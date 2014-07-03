@@ -481,6 +481,15 @@ stamps/%/deb-archive:
 	mkdir -p dists/$(*D)/main/binary-$(*F)/
 	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
 
+.PHONY: clean-%-dsc
+clean-%-dsc:
+	echo cleaning $*
+	rm -f $*/$*_*.debian.tar.xz
+	rm -f $*/$*_*.dsc
+	rm -f $*/$*_*_source.changes
+	rm -f $*/$*_*.orig.tar.xz
+	rm -f stamp/dsc-$*
+
 .PHONY: clean
 clean:
 	rm -rf linux/
