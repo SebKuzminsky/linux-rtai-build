@@ -281,6 +281,7 @@ stamps/%/linux.dsc: stamps/linux.dsc.build
 	install --mode 0644 linux/linux_*.dsc             $(DSC_DIR)
 	install --mode 0644 linux/linux_*_source.changes  $(DSC_DIR)
 	install --mode 0644 linux/linux_*.orig.tar.xz     $(DSC_DIR)
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $* source
 	mkdir -p $(shell dirname $@)
 	touch $@
 
