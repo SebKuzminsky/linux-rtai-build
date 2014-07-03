@@ -87,8 +87,7 @@ LINUX_TOOLS_BRANCH = 3.4
 #RTAI_GIT = https://github.com/SebKuzminsky/rtai.git
 RTAI_GIT = ssh://highlab.com/home/seb/rtai.git
 
-#RTAI_BRANCH = prerelease-7
-RTAI_BRANCH = old-3.9-debs # this is basically what i used for the old 3.4.55-rtai debs, "known good"
+RTAI_BRANCH = deb-packaging
 
 
 WHEEZY_KEY_ID = 6FB2A1C265FFB764
