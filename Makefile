@@ -257,15 +257,15 @@ stamps/%/linux.deb: linux.dsc pbuilder/%/base.tgz
 	        --build \
 	        --configfile pbuilderrc \
 	        linux/linux_*.dsc
-
+	
 	# move built files to the deb archive
 	install -d --mode 0755 $(UDEB_DIR)
 	install -d --mode 0755 $(DEB_DIR)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb $(UDEB_DIR)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
-
+	
 	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
-
+	
 	mkdir -p $(shell dirname $@)
 	touch $@
 
