@@ -248,7 +248,7 @@ linux.deb: $(ALL_LINUX_DEBS)
 
 # FIXME: if there are multiple linux.dsc versions, the wildcard argument
 #     to pbuilder will do the wrong thing
-stamps/%/linux.deb: linux.dsc pbuilder/%/base.tgz
+stamps/%/linux.deb: stamps/linux.dsc.build pbuilder/%/base.tgz
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
