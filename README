@@ -99,6 +99,10 @@ available in the Debian Linux Kernel Handbook:
     http://kernel-handbook.alioth.debian.org/
 
 
+Building the linux kernel for Precise requires the kmod package from
+Wheezy.
+
+
 ==  linux-tools
 
 The linux-tools packaging is from the upstream debian packaging.
@@ -185,39 +189,6 @@ My old rtai debs were based on:
 
 
 = Open Issues
-
-== Linux doesnt build on Precise
-
------
-dh_testdir
-dh_prep
-kernel-wedge install-files 3.4-9
-        install -D -m 644 debian/linux-image-3.4-9-486/boot/vmlinuz-3.4-9-486 debian/kernel-image-3.4-9-486-di/boot/vmlinuz
-        install -D -m 644 debian/linux-image-3.4-9-486/boot/System.map-3.4-9-486 debian/kernel-image-3.4-9-486-di/boot/System.map
-        kernel-wedge copy-modules 3.4-9 486 3.4-9-486
-tar: *: Cannot stat: No such file or directory
-tar: 0: Cannot stat: No such file or directory
-tar: 0x0: Cannot stat: No such file or directory
-tar: 0x00: Cannot stat: No such file or directory
-tar: 0x0000: Cannot stat: No such file or directory
-tar: 0x000000: Cannot stat: No such file or directory
-tar: 0x00000000: Cannot stat: No such file or directory
-tar: 0x00000001: Cannot stat: No such file or directory
-tar: 0x00000002: Cannot stat: No such file or directory
-tar: 0x00000003: Cannot stat: No such file or directory
-tar: 0x00000004: Cannot stat: No such file or directory
-tar: 0x00000005: Cannot stat: No such file or directory
-... (and lots more)
------
-
-Looks like modules.dep isn't in the expected format?  Or confused somehow.
-It's created by depmod; precise uses module-init-tools 3.16, wheezy uses
-kmod 9-3.  Ubuntu went to kmod with Raring.
-
-Tried the kernel-wedge package from Wheezy, that didn't fix it.
-
-Build the kmod package from Wheezy, for Precise.  That fixed it.
-
 
 == Why does pbuilder re-create the dsc, but differently?
 
