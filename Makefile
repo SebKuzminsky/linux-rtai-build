@@ -188,7 +188,7 @@ clean-kernel-wedge:
 .PHONY: kmod.deb
 kmod.deb: $(ALL_KMOD_DEBS)
 
-stamps/%/kmod.deb: kmod.dsc pbuilder/%/base.tgz
+stamps/%/kmod.deb: stamps/kmod.dsc.build pbuilder/%/base.tgz
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -199,34 +199,34 @@ stamps/%/kmod.deb: kmod.dsc pbuilder/%/base.tgz
 	        --build \
 	        --configfile pbuilderrc \
 	        kmod/kmod_*.dsc
-
+	
 	# move built files to the deb archive
 	install -d --mode 0755 $(DEB_DIR)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
-
+	
 	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
-
+	
 	mkdir -p $(shell dirname $@)
 	touch $@
 
 
 .PHONY: kmod.dsc
-kmod.dsc: $(ALL_KMOD_DSCS)
+kmod.dsc: clean-kmod-dsc $(ALL_KMOD_DSCS)
 
-stamps/%/kmod.dsc: stamps/kmod.dsc
+stamps/%/kmod.dsc: stamps/kmod.dsc.build
 	install --mode 0755 --directory $(DSC_DIR)
 	install --mode 0644 kmod/kmod_*.dsc            $(DSC_DIR)
 	install --mode 0644 kmod/kmod_*.debian.tar.gz  $(DSC_DIR)
 	install --mode 0644 kmod/kmod_*.orig.tar.xz    $(DSC_DIR)
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $* source
 	mkdir -p $(shell dirname $@)
 	touch $@
 
-stamps/kmod.dsc: kmod/kmod
+stamps/kmod.dsc.build: kmod/kmod
 	( \
 		cd $^; \
 		dpkg-buildpackage -S -us -uc -I; \
 	)
-
 	install --mode 0755 --directory $(shell dirname $@)
 	touch $@
 
