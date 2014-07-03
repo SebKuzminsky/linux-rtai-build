@@ -9,4 +9,5 @@ aptcache/
 dists/
 ccache/
 packages-*.db
+kmod/
 kernel-wedge/
