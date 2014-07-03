@@ -61,6 +61,11 @@ I currently have the following RTAI branches:
 
         This is the good one.
 
+    * shabby/linuxcnc-old
+
+        This is basically the tree from the old known-good commit
+        a0dc5355, with the kernel patch bumped to 3.4.96.
+
 
 == Modifying/updating Linux
 
