@@ -417,7 +417,7 @@ stamps/%/rtai.dsc: stamps/rtai.dsc.build
 	install --mode 0755 --directory $(DSC_DIR)
 	install --mode 0644 rtai/rtai_*.tar.gz         $(DSC_DIR)
 	install --mode 0644 rtai/rtai_*.dsc            $(DSC_DIR)
-	install --mode 0644 rtai_*_source.changes $(DSC_DIR)
+	install --mode 0644 rtai/rtai_*_source.changes $(DSC_DIR)
 	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $* source
 	mkdir -p $(shell dirname $@)
 	touch $@
