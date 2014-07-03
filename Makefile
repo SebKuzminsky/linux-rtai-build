@@ -479,12 +479,11 @@ stamps/%/deb-archive:
 
 .PHONY: clean-%-dsc
 clean-%-dsc:
-	echo cleaning $*
 	rm -f $*/$*_*.debian.tar.xz
 	rm -f $*/$*_*.dsc
 	rm -f $*/$*_*_source.changes
 	rm -f $*/$*_*.orig.tar.xz
-	rm -f stamp/$*.dsc.build
+	rm -f stamps/$*.dsc.build
 
 .PHONY: clean
 clean:
