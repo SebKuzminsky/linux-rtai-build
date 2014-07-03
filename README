@@ -42,6 +42,25 @@ Then build RTAI.
 The original packaging of Linux/RTAI targets Linux 3.4.87 and RTAI 4.0
 *plus* the ShabbyX/memleak mods.  So not RTAI 4.0 from Paolo.
 
+I currently have the following RTAI branches:
+
+    * old-3.9-debs
+
+        This branch successfully builds debs.  It starts with what i build
+        3.4.55-rtai-2 from, plus:
+
+        * support 3.4.87
+
+        * build in pbuilder (build against linux-headers instead of a built
+            linux source tree, improved build-dependencies, add
+            debian/configure like in linuxcnc)
+
+    * deb-packaging
+
+        Rebased, cleaned up version of old-3.9-debs.
+
+        This is the good one.
+
 
 == Modifying/updating Linux
 
