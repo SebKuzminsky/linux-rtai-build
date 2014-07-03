@@ -327,7 +327,7 @@ clean-kernel:
 .PHONY: linux-tools.deb
 linux-tools.deb: $(ALL_LINUX_TOOLS_DEBS)
 
-stamps/%/linux-tools.deb: linux-tools.dsc pbuilder/%/base.tgz
+stamps/%/linux-tools.deb: stamps/linux-tools.dsc.build pbuilder/%/base.tgz
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -338,31 +338,32 @@ stamps/%/linux-tools.deb: linux-tools.dsc pbuilder/%/base.tgz
 	        --build \
 	        --configfile pbuilderrc \
 	        linux-tools/linux-tools_*.dsc
-
+	
 	# move built files to the deb archive
 	install -d --mode 0755 $(DEB_DIR)
 	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
-
+	
 	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
-
+	
 	mkdir -p $(shell dirname $@)
 	touch $@
 
 
 .PHONY: linux-tools.dsc
-linux-tools.dsc: $(ALL_LINUX_TOOLS_DSCS)
+linux-tools.dsc: clean-linux-tools-dsc $(ALL_LINUX_TOOLS_DSCS)
 
-stamps/%/linux-tools.dsc: stamps/linux-tools.dsc
+stamps/%/linux-tools.dsc: stamps/linux-tools.dsc.build
 	install --mode 0755 --directory $(DSC_DIR)
-	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2.debian.tar.xz  $(DSC_DIR)
-	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2.dsc            $(DSC_DIR)
-	install --mode 0644 linux-tools/linux-tools_3.4-linuxcnc2_source.changes $(DSC_DIR)
-	install --mode 0644 linux-tools/linux-tools_3.4.orig.tar.xz              $(DSC_DIR)
+	install --mode 0644 linux-tools/linux-tools_*.debian.tar.xz  $(DSC_DIR)
+	install --mode 0644 linux-tools/linux-tools_*.dsc            $(DSC_DIR)
+	install --mode 0644 linux-tools/linux-tools_*.changes        $(DSC_DIR)
+	install --mode 0644 linux-tools/linux-tools_*.orig.tar.xz    $(DSC_DIR)
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $* source
 	mkdir -p $(shell dirname $@)
 	touch $@
 
 # The "./debian/rules debian/control" step will fail; read output
-stamps/linux-tools.dsc: linux-tools/linux-tools/debian/rules linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
+stamps/linux-tools.dsc.build: linux-tools/linux-tools/debian/rules linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 	( \
 		cd linux-tools/linux-tools; \
 		./debian/bin/genorig.py ../../linux/orig/$(LINUX_TARBALL_KERNEL_ORG); \
