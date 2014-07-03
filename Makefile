@@ -292,7 +292,6 @@ stamps/linux.dsc.build: linux/linux-$(LINUX_VERSION)
 		fakeroot debian/rules source || true; \
 		dpkg-buildpackage -S -us -uc -I; \
 	)
-	
 	install --mode 0755 --directory $(shell dirname $@)
 	touch $@
 
