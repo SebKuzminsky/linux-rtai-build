@@ -61,13 +61,27 @@ LINUX_TARBALL_KERNEL_ORG = linux-$(LINUX_VERSION).tar.xz
 # debian packaging wants
 LINUX_TARBALL = linux_$(LINUX_VERSION).orig.tar.xz
 
+
+#
 # this is the linux/debian directory for the rtai-patched kernel
+#
+
 LINUX_RTAI_DEBIAN_GIT = ssh://highlab.com/home/seb/linux-rtai-debian.git
 LINUX_RTAI_DEBIAN_BRANCH = 3.4.87-rtai
 
+
+#
+# linux-tools
 # a specific version of the debian.org upstream, with minor tweaks
+#
+
 LINUX_TOOLS_GIT = ssh://highlab.com/home/seb/linux-tools.git
 LINUX_TOOLS_BRANCH = 3.4
+
+
+#
+# rtai
+#
 
 # ShabbyX RTAI fork, my branch adds debian packaging
 #RTAI_GIT = https://github.com/SebKuzminsky/rtai.git
