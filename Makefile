@@ -434,6 +434,7 @@ stamps/rtai.dsc.build: rtai/rtai/debian/rules.in
 	touch $@
 
 rtai/rtai/debian/rules.in:
+	install --mode 0755 --directory rtai
 	cd rtai; git clone $(RTAI_GIT) rtai
 	cd rtai/rtai; git checkout $(RTAI_BRANCH)
 
