@@ -275,6 +275,7 @@ stamps/%/linux.deb: stamps/linux.dsc.build pbuilder/%/base.tgz
 .PHONY: linux.dsc
 linux.dsc: clean-linux-dsc $(ALL_LINUX_DSCS)
 
+# $* here is the DIST
 stamps/%/linux.dsc: stamps/linux.dsc.build
 	install --mode 0755 --directory $(DSC_DIR)
 	install --mode 0644 linux/linux_*.debian.tar.xz   $(DSC_DIR)
