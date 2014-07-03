@@ -9,3 +9,4 @@ aptcache/
 dists/
 ccache/
 packages-*.db
+kernel-wedge/
