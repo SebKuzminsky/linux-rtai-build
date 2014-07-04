@@ -127,7 +127,7 @@ UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
 
 
 #
-# this is a set of rules for copying a built dsc to dist/(all-dists)/main/source
+# rules for copying a built dsc to dist/(all-dists)/main/source
 #
 
 copy_if_present = ( \
