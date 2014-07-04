@@ -186,10 +186,7 @@ stamps/%/kernel-wedge.deb: stamps/kernel-wedge.dsc.build pbuilder/%/base.tgz
 kernel-wedge.dsc: clean-kernel-wedge-dsc $(ALL_KERNEL_WEDGE_DSCS)
 
 stamps/kernel-wedge.dsc.build: kernel-wedge/kernel-wedge
-	( \
-		cd $^; \
-		dpkg-buildpackage -S -us -uc -I; \
-	)
+	cd $^; dpkg-buildpackage -S -us -uc -I;
 	install --mode 0755 --directory $(shell dirname $@)
 	touch $@
 
