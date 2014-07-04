@@ -141,6 +141,7 @@ copy_if_present = ( \
 # % (and thus $*) here is the name of a package, like "linux" or "rtai"
 $(foreach D,$(DISTS),stamps/$D/%.dsc): DIST=$(shell echo $@ | cut -d / -f 2)
 $(foreach D,$(DISTS),stamps/$D/%.dsc): stamps/%.dsc.build
+	rm -f $(DSC_DIR)/$*_*
 	@export GLOB=$*/$*_*.dsc            DIR=$(DSC_DIR); $(copy_if_present)
 	@export GLOB=$*/$*_*_source.changes DIR=$(DSC_DIR); $(copy_if_present)
 	@export GLOB=$*/$*_*.tar.xz         DIR=$(DSC_DIR); $(copy_if_present)
