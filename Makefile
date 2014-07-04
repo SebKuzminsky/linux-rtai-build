@@ -154,6 +154,23 @@ $(foreach D,$(DISTS),stamps/$D/%.dsc): stamps/%.dsc.build
 
 
 #
+# rule to clean a package's dsc
+# % (and thus $*) is the name of a package, like "linux" or "rtai"
+#
+
+.PHONY: clean-%-dsc
+clean-%-dsc:
+	rm -f $*/$*_*.dsc
+	rm -f $*/$*_*_source.changes
+	rm -f $*/$*_*.tar.xz
+	rm -f $*/$*_*.tar.gz
+	rm -f $*/$*_*.debian.tar.xz
+	rm -f $*/$*_*.debian.tar.gz
+	rm -f $*/$*_*.orig.tar.xz
+	rm -f stamps/$*.dsc.build
+
+
+#
 # kernel-wedge rules
 #
 
@@ -453,15 +470,6 @@ stamps/%/deb-archive:
 	mkdir -p dists/$(*D)/main/source
 	mkdir -p dists/$(*D)/main/binary-$(*F)/
 	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
-
-.PHONY: clean-%-dsc
-clean-%-dsc:
-	rm -f $*/$*_*.debian.tar.xz
-	rm -f $*/$*_*.dsc
-	rm -f $*/$*_*_source.changes
-	rm -f $*/$*_*.orig.tar.xz
-	rm -f $*/$*_*.tar.xz
-	rm -f stamps/$*.dsc.build
 
 .PHONY: clean
 clean:
