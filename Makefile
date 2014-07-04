@@ -122,6 +122,38 @@ UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
 
 
 #
+# generic rules
+#
+
+
+#
+# this is a set of rules for copying a built dsc to dist/(all-dists)/main/source
+#
+
+copy_if_present = ( \
+    if ls $$GLOB > /dev/null 2> /dev/null; then \
+        echo "copying $$GLOB to $$DIR"; \
+        install --mode 0755 --directory $$DIR; \
+        install --mode 0644 $$GLOB $$DIR; \
+    fi \
+)
+
+# % (and thus $*) here is the name of a package, like "linux" or "rtai"
+$(foreach D,$(DISTS),stamps/$D/%.dsc): DIST=$(shell echo $@ | cut -d / -f 2)
+$(foreach D,$(DISTS),stamps/$D/%.dsc): stamps/%.dsc.build
+	@export GLOB=$*/$*_*.dsc            DIR=$(DSC_DIR); $(copy_if_present)
+	@export GLOB=$*/$*_*_source.changes DIR=$(DSC_DIR); $(copy_if_present)
+	@export GLOB=$*/$*_*.tar.xz         DIR=$(DSC_DIR); $(copy_if_present)
+	@export GLOB=$*/$*_*.tar.gz         DIR=$(DSC_DIR); $(copy_if_present)
+	@export GLOB=$*/$*_*.debian.tar.xz  DIR=$(DSC_DIR); $(copy_if_present)
+	@export GLOB=$*/$*_*.debian.tar.gz  DIR=$(DSC_DIR); $(copy_if_present)
+	@export GLOB=$*/$*_*.orig.tar.xz    DIR=$(DSC_DIR); $(copy_if_present)
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(DIST) source
+	mkdir -p $(shell dirname $@)
+	touch $@
+
+
+#
 # kernel-wedge rules
 #
 
@@ -152,15 +184,6 @@ stamps/%/kernel-wedge.deb: stamps/kernel-wedge.dsc.build pbuilder/%/base.tgz
 
 .PHONY: kernel-wedge.dsc
 kernel-wedge.dsc: clean-kernel-wedge-dsc $(ALL_KERNEL_WEDGE_DSCS)
-
-stamps/%/kernel-wedge.dsc: stamps/kernel-wedge.dsc.build
-	install --mode 0755 --directory $(DSC_DIR)
-	install --mode 0644 kernel-wedge/kernel-wedge_*.dsc            $(DSC_DIR)
-	install --mode 0644 kernel-wedge/kernel-wedge_*_source.changes $(DSC_DIR)
-	install --mode 0644 kernel-wedge/kernel-wedge_*.tar.gz         $(DSC_DIR)
-	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $* source
-	mkdir -p $(shell dirname $@)
-	touch $@
 
 stamps/kernel-wedge.dsc.build: kernel-wedge/kernel-wedge
 	( \
@@ -212,15 +235,6 @@ stamps/%/kmod.deb: stamps/kmod.dsc.build pbuilder/%/base.tgz
 
 .PHONY: kmod.dsc
 kmod.dsc: clean-kmod-dsc $(ALL_KMOD_DSCS)
-
-stamps/%/kmod.dsc: stamps/kmod.dsc.build
-	install --mode 0755 --directory $(DSC_DIR)
-	install --mode 0644 kmod/kmod_*.dsc            $(DSC_DIR)
-	install --mode 0644 kmod/kmod_*.debian.tar.gz  $(DSC_DIR)
-	install --mode 0644 kmod/kmod_*.orig.tar.xz    $(DSC_DIR)
-	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $* source
-	mkdir -p $(shell dirname $@)
-	touch $@
 
 stamps/kmod.dsc.build: kmod/kmod
 	( \
@@ -274,17 +288,6 @@ stamps/%/linux.deb: stamps/linux.dsc.build pbuilder/%/base.tgz
 
 .PHONY: linux.dsc
 linux.dsc: clean-linux-dsc $(ALL_LINUX_DSCS)
-
-# $* here is the DIST
-stamps/%/linux.dsc: stamps/linux.dsc.build
-	install --mode 0755 --directory $(DSC_DIR)
-	install --mode 0644 linux/linux_*.debian.tar.xz   $(DSC_DIR)
-	install --mode 0644 linux/linux_*.dsc             $(DSC_DIR)
-	install --mode 0644 linux/linux_*_source.changes  $(DSC_DIR)
-	install --mode 0644 linux/linux_*.orig.tar.xz     $(DSC_DIR)
-	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $* source
-	mkdir -p $(shell dirname $@)
-	touch $@
 
 # Prepare the linux sources and the debian packaging, then make the dsc.
 # FIXME: This emits an ugly error message, basically warning us
@@ -353,16 +356,6 @@ stamps/%/linux-tools.deb: stamps/linux-tools.dsc.build pbuilder/%/base.tgz
 .PHONY: linux-tools.dsc
 linux-tools.dsc: clean-linux-tools-dsc $(ALL_LINUX_TOOLS_DSCS)
 
-stamps/%/linux-tools.dsc: stamps/linux-tools.dsc.build
-	install --mode 0755 --directory $(DSC_DIR)
-	install --mode 0644 linux-tools/linux-tools_*.debian.tar.xz  $(DSC_DIR)
-	install --mode 0644 linux-tools/linux-tools_*.dsc            $(DSC_DIR)
-	install --mode 0644 linux-tools/linux-tools_*.changes        $(DSC_DIR)
-	install --mode 0644 linux-tools/linux-tools_*.orig.tar.xz    $(DSC_DIR)
-	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $* source
-	mkdir -p $(shell dirname $@)
-	touch $@
-
 # The "./debian/rules debian/control" step will fail; read output
 stamps/linux-tools.dsc.build: linux-tools/linux-tools/debian/rules linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 	( \
@@ -412,15 +405,6 @@ stamps/%/rtai.deb: stamps/rtai.dsc.build pbuilder/%/base.tgz
 
 .PHONY: rtai.dsc
 rtai.dsc: clean-rtai-dsc $(ALL_RTAI_DSCS)
-
-stamps/%/rtai.dsc: stamps/rtai.dsc.build
-	install --mode 0755 --directory $(DSC_DIR)
-	install --mode 0644 rtai/rtai_*.tar.gz         $(DSC_DIR)
-	install --mode 0644 rtai/rtai_*.dsc            $(DSC_DIR)
-	install --mode 0644 rtai/rtai_*_source.changes $(DSC_DIR)
-	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $* source
-	mkdir -p $(shell dirname $@)
-	touch $@
 
 stamps/rtai.dsc.build: rtai/rtai/debian/rules.in
 	( \
