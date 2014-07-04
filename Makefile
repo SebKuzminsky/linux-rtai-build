@@ -116,7 +116,6 @@ ALL_RTAI_DEBS = $(foreach DIST,$(DISTS),\
         stamps/$(DIST)/$(ARCH)/rtai.deb))
 
 
-DSC_DIR = dists/$*/main/source/
 DEB_DIR = dists/$(*D)/main/binary-$(*F)/
 UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
 
@@ -140,6 +139,7 @@ copy_if_present = ( \
 
 # % (and thus $*) here is the name of a package, like "linux" or "rtai"
 $(foreach D,$(DISTS),stamps/$D/%.dsc): DIST=$(shell echo $@ | cut -d / -f 2)
+$(foreach D,$(DISTS),stamps/$D/%.dsc): DSC_DIR=dists/$(DIST)/main/source/
 $(foreach D,$(DISTS),stamps/$D/%.dsc): stamps/%.dsc.build
 	rm -f $(DSC_DIR)/$*_*
 	@export GLOB=$*/$*_*.dsc            DIR=$(DSC_DIR); $(copy_if_present)
