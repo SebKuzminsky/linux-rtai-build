@@ -234,10 +234,7 @@ stamps/%/kmod.deb: stamps/kmod.dsc.build pbuilder/%/base.tgz
 kmod.dsc: clean-kmod-dsc $(ALL_KMOD_DSCS)
 
 stamps/kmod.dsc.build: kmod/kmod
-	( \
-		cd $^; \
-		dpkg-buildpackage -S -us -uc -I; \
-	)
+	cd $^; dpkg-buildpackage -S -us -uc -I;
 	install --mode 0755 --directory $(shell dirname $@)
 	touch $@
 
