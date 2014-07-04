@@ -36,8 +36,8 @@ ALL_KERNEL_WEDGE_DEBS = $(foreach DIST,precise,\
 # debian.org packaging of the linux kernel
 #
 
-KMOD_GIT = git://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git
-KMOD_BRANCH = v9
+KMOD_GIT = ssh://highlab.com/home/seb/kmod.git
+KMOD_BRANCH = master
 
 ALL_KMOD_DSCS = $(foreach DIST,precise,stamps/$(DIST)/kmod.dsc)
 
@@ -252,6 +252,7 @@ stamps/%/kmod.deb: stamps/kmod.dsc.build pbuilder/%/base.tgz
 kmod.dsc: clean-kmod-dsc $(ALL_KMOD_DSCS)
 
 stamps/kmod.dsc.build: kmod/kmod
+	cd kmod; kmod/debian/rules get-orig-source
 	cd $^; dpkg-buildpackage -S -us -uc -I;
 	install --mode 0755 --directory $(shell dirname $@)
 	touch $@
