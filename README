@@ -223,10 +223,6 @@ and i didn't change the config.  There are other hyperv modules getting built.
 
 == download all orig things into /orig, so they're easier to save on 'make clean'
 
-== Make a new install-%-dsc target, for all to use
-
-Should this target remove any existing dsc's from dists/%/?  Probably not?
-
 == Make a new install-%-deb target, for all to use
 
 Should this target remove any existing dsc's from dists/%/?  Probably not?
