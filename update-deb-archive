@@ -4,6 +4,11 @@ export KEY="$1"
 export DIST="$2"
 export ARCH="$3"
 
+if [ -z "$KEY" -o -z "$DIST" -o -z "$ARCH" ]; then
+    echo usage: update-deb-archve Key Dist Arch
+    exit 1
+fi
+
 rm -f $(find dists/$DIST/ -name 'Contents*')
 rm -f dists/$DIST/Release
 rm -f dists/$DIST/Release.gpg
