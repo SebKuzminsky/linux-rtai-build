@@ -179,7 +179,8 @@ clean-%-dsc:
 .PHONY: kernel-wedge.deb
 kernel-wedge.deb: $(ALL_KERNEL_WEDGE_DEBS)
 
-stamps/%/kernel-wedge.deb: stamps/kernel-wedge.dsc.build pbuilder/%/base.tgz
+stamps/%/kernel-wedge.deb: pbuilder/%/base.tgz
+	make stamps/$(*D)/kernel-wedge.dsc
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -189,7 +190,7 @@ stamps/%/kernel-wedge.deb: stamps/kernel-wedge.dsc.build pbuilder/%/base.tgz
 	    pbuilder \
 	        --build \
 	        --configfile pbuilderrc \
-	        kernel-wedge/kernel-wedge_*.dsc
+	        dists/$(*D)/main/source/kernel-wedge_*.dsc
 	
 	# move built files to the deb archive
 	install -d --mode 0755 $(DEB_DIR)
@@ -227,7 +228,8 @@ clean-kernel-wedge:
 .PHONY: kmod.deb
 kmod.deb: $(ALL_KMOD_DEBS)
 
-stamps/%/kmod.deb: stamps/kmod.dsc.build pbuilder/%/base.tgz
+stamps/%/kmod.deb: pbuilder/%/base.tgz
+	make stamps/$(*D)/kmod.dsc
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -237,7 +239,7 @@ stamps/%/kmod.deb: stamps/kmod.dsc.build pbuilder/%/base.tgz
 	    pbuilder \
 	        --build \
 	        --configfile pbuilderrc \
-	        kmod/kmod_*.dsc
+	        dists/$(*D)/main/source/kmod_*.dsc
 	
 	# move built files to the deb archive
 	install -d --mode 0755 $(DEB_DIR)
@@ -274,9 +276,8 @@ clean-kmod:
 .PHONY: linux.deb
 linux.deb: $(ALL_LINUX_DEBS)
 
-# FIXME: if there are multiple linux.dsc versions, the wildcard argument
-#     to pbuilder will do the wrong thing
-stamps/%/linux.deb: stamps/linux.dsc.build pbuilder/%/base.tgz
+stamps/%/linux.deb: pbuilder/%/base.tgz
+	make stamps/$(*D)/linux.dsc
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -286,7 +287,7 @@ stamps/%/linux.deb: stamps/linux.dsc.build pbuilder/%/base.tgz
 	    pbuilder \
 	        --build \
 	        --configfile pbuilderrc \
-	        linux/linux_*.dsc
+	        dists/$(*D)/main/source/linux_*.dsc
 	
 	# move built files to the deb archive
 	install -d --mode 0755 $(UDEB_DIR)
@@ -299,13 +300,11 @@ stamps/%/linux.deb: stamps/linux.dsc.build pbuilder/%/base.tgz
 	mkdir -p $(shell dirname $@)
 	touch $@
 
-
 .PHONY: linux.dsc
 linux.dsc: clean-linux-dsc $(ALL_LINUX_DSCS)
 
 # Prepare the linux sources and the debian packaging, then make the dsc.
-# FIXME: This emits an ugly error message, basically warning us
-# that this is not an official Debian linux kernel package.
+# FIXME: This emits an ugly error message
 stamps/linux.dsc.build: linux/linux-$(LINUX_VERSION)
 	cp linux/orig/$(LINUX_TARBALL) linux/
 	( \
@@ -345,7 +344,8 @@ clean-kernel:
 .PHONY: linux-tools.deb
 linux-tools.deb: $(ALL_LINUX_TOOLS_DEBS)
 
-stamps/%/linux-tools.deb: stamps/linux-tools.dsc.build pbuilder/%/base.tgz
+stamps/%/linux-tools.deb: pbuilder/%/base.tgz
+	make stamps/$(*D)/linux-tools.dsc
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -355,7 +355,7 @@ stamps/%/linux-tools.deb: stamps/linux-tools.dsc.build pbuilder/%/base.tgz
 	    pbuilder \
 	        --build \
 	        --configfile pbuilderrc \
-	        linux-tools/linux-tools_*.dsc
+	        dists/$(*D)/main/source/linux-tools_*.dsc
 	
 	# move built files to the deb archive
 	install -d --mode 0755 $(DEB_DIR)
@@ -365,7 +365,6 @@ stamps/%/linux-tools.deb: stamps/linux-tools.dsc.build pbuilder/%/base.tgz
 	
 	mkdir -p $(shell dirname $@)
 	touch $@
-
 
 .PHONY: linux-tools.dsc
 linux-tools.dsc: clean-linux-tools-dsc $(ALL_LINUX_TOOLS_DSCS)
@@ -396,7 +395,8 @@ linux-tools/linux-tools/debian/rules: linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 .PHONY: rtai.deb
 rtai.deb: $(ALL_RTAI_DEBS)
 
-stamps/%/rtai.deb: stamps/rtai.dsc.build pbuilder/%/base.tgz
+stamps/%/rtai.deb: pbuilder/%/base.tgz
+	make stamps/$(*D)/rtai.dsc
 	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
 	sudo \
 	    DIST=$(*D) \
@@ -406,7 +406,7 @@ stamps/%/rtai.deb: stamps/rtai.dsc.build pbuilder/%/base.tgz
 	    pbuilder \
 	        --build \
 	        --configfile pbuilderrc \
-	        rtai/rtai_*.dsc
+	        dists/$(*D)/main/source/rtai_*.dsc
 	
 	# move built files to the deb archive
 	install -d --mode 0755 $(DEB_DIR)
@@ -452,6 +452,12 @@ pbuilder/%/base.tgz: pbuilder/keyring.gpg stamps/%/deb-archive
 		mkdir -p pbuilder/$(*D)/$(*F); \
 		sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --create --configfile pbuilderrc; \
 	fi
+
+# Base chroot tarballs are named e.g. pbuilder/lucid/i386/base.tgz
+# in this case, $(*D) = lucid; $(*F) = i386
+.PHONY: pbuilder/%/login
+pbuilder/%/login: pbuilder/%/base.tgz
+	sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --login --configfile pbuilderrc;
 
 pbuilder/keyring.gpg:
 	mkdir -p pbuilder
