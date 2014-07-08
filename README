@@ -21,20 +21,27 @@ The things it fetches and builds are:
         a specific version of debian.org's package, plus some minor
         tweaks)
 
+    * kmod (manages kernel modules)
+
     * rtai (based on the ShabbyX repo, but a special branch that adds
         debian packaging)
 
 
 = Using this system to build Linux/RTAI
 
-First build the linux kernel.  This uses the kernel.org tarball, with
+First build kernel-wedge and kmod (needed to build the kernel on Precise).
+This step is needed the first time only.
+
+Then build the linux kernel.  This uses the kernel.org tarball, with
 packaging provided by a local git repo based on Debian's packaging of
 the linux kernel.  Our local debian packaging of the linux kernel adds
 the rtai patch and not much else.
 
-Then build linux-tools, kmod, and kernel-wedge.
+Then build linux-tools.  This step is needed the first time you build
+a new X.Y kernel version (for example, you need a linux-tools for 3.4,
+another for 3.14, etc).
 
-Then build RTAI.
+Finally build RTAI.
 
 
 = Modifying/updating Linux or RTAI
@@ -98,9 +105,46 @@ available in the Debian Linux Kernel Handbook:
 
     http://kernel-handbook.alioth.debian.org/
 
+Also here:
+
+    https://wiki.debian.org/HowToRebuildAnOfficialDebianKernelPackage
 
 Building the linux kernel for Precise requires the kmod package from
 Wheezy.
+
+=== Changing the kernel config
+
+Here are the instructions on changing kernel configs:
+
+    http://kernel-handbook.alioth.debian.org/ch-common-tasks.html#s4.2.3
+
+It might be easiest to do these inside pbuilder for the build dependencies
+to work out right:
+
+-----
+# outside the chroot:
+make linux.dsc
+make pbuilder/$(DIST)/$(ARCH)/login
+# copy the dsc into tmp/ in the chroot, which lives in tmp/$(PID)
+
+# inside the chroot login:
+cd /tmp
+dpkg-source -x *.dsc
+cd linux-*
+dpkg-checkbuilddeps
+# install missing build deps
+apt-get install libncurses-dev
+debian/rules source
+make -f debian/rules.gen setup_i386_rtai_686-pae
+make -C debian/build/build_i386_rtai_686-pae/ oldconfig
+make -C debian/build/build_i386_rtai_686-pae/ menuconfig
+-----
+
+FIXME: That makes a new .config, i wonder how to split it up into the
+various files in debian/config?  You could diff .config and .config.old
+to see what settings you changed, then change those in the already-split
+files?  I wonder how to choose which settings go in which files, and
+what happens if a setting is in multiple files.
 
 
 ==  linux-tools
