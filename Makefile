@@ -50,7 +50,7 @@ ALL_KMOD_DEBS = $(foreach DIST,precise,\
 # linux
 #
 
-LINUX_VERSION = 3.4.87
+LINUX_VERSION = 3.4.55
 
 # this is the URL of the tarball at kernel.org
 LINUX_TARBALL_URL = https://www.kernel.org/pub/linux/kernel/v3.x/linux-$(LINUX_VERSION).tar.xz
@@ -67,7 +67,7 @@ LINUX_TARBALL = linux_$(LINUX_VERSION).orig.tar.xz
 #
 
 LINUX_RTAI_DEBIAN_GIT = ssh://highlab.com/home/seb/linux-rtai-debian.git
-LINUX_RTAI_DEBIAN_BRANCH = 3.4.87-rtai
+LINUX_RTAI_DEBIAN_BRANCH = 3.4.55-rtai
 
 
 #
@@ -87,7 +87,8 @@ LINUX_TOOLS_BRANCH = 3.4
 #RTAI_GIT = https://github.com/SebKuzminsky/rtai.git
 RTAI_GIT = ssh://highlab.com/home/seb/rtai.git
 
-RTAI_BRANCH = deb-packaging
+#RTAI_BRANCH = deb-packaging
+RTAI_BRANCH = old-3.9-debs
 
 
 WHEEZY_KEY_ID = 6FB2A1C265FFB764
