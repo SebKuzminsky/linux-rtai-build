@@ -238,16 +238,7 @@ My old rtai debs were based on:
 
 The .orig.tar.xz is the same but the other files have different md5sums.
 
-== Clean up all the git repos
-
-* linux/debian
-* linux-tools/debian
-* rtai
-* linux-rtai-deb-builder
-
 == Rebuild everything from scratch to find startup transients
-
-== Figure out what version of rtai to build
 
 == build rtai-modules for the rtai-486 linux-image package
 
@@ -273,6 +264,9 @@ Should this target remove any existing dsc's from dists/%/?  Probably not?
 
 == usb is broken on skunkworks' machine
 
-2014-07-03 
-11:43 < skunkworks> seb_kuzminsky, did you see - with the rtai kernel
-    usb's don't work - with the rt-preempt from debian usb's do work
+http://psha.org.ru/irc/%23emc-devel/2014-07-03.html#15:22:31
+
+[15:22:31] <skunkworks> cradek, jepler, usb ports don't work with rtai kernel - do work with the debian -rt kernel... 
+
+fixed with 3.4.55-2linuxcnc?
+
