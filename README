@@ -32,16 +32,33 @@ The things it fetches and builds are:
 First build kernel-wedge and kmod (needed to build the kernel on Precise).
 This step is needed the first time only.
 
+-----
+make kernel-wedge.deb
+make kmod.deb
+-----
+
 Then build the linux kernel.  This uses the kernel.org tarball, with
 packaging provided by a local git repo based on Debian's packaging of
 the linux kernel.  Our local debian packaging of the linux kernel adds
 the rtai patch and not much else.
 
+-----
+make linux.deb
+-----
+
 Then build linux-tools.  This step is needed the first time you build
 a new X.Y kernel version (for example, you need a linux-tools for 3.4,
 another for 3.14, etc).
 
+-----
+make linux-tools.deb
+-----
+
 Finally build RTAI.
+
+-----
+make rtai.deb
+-----
 
 
 = Modifying/updating Linux or RTAI
