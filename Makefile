@@ -91,6 +91,20 @@ RTAI_GIT = ssh://highlab.com/home/seb/rtai.git
 RTAI_BRANCH = old-3.9-debs
 
 
+#
+# mesaflash
+#
+
+MESAFLASH_GIT = https://github.com/micges/mesaflash.git
+MESAFLASH_BRANCH = master
+
+ALL_MESAFLASH_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/mesaflash.dsc)
+
+ALL_MESAFLASH_DEBS = $(foreach DIST,$(DISTS),\
+    $(foreach ARCH,$(ARCHES),\
+        stamps/$(DIST)/$(ARCH)/mesaflash.deb))
+
+
 WHEEZY_KEY_ID = 6FB2A1C265FFB764
 PRECISE_KEY_ID = 40976EAF437D05B5
 KEY_IDS = $(WHEEZY_KEY_ID) $(PRECISE_KEY_ID)
@@ -267,6 +281,57 @@ kmod/kmod:
 
 clean-kmod:
 	rm -rf kmod
+
+
+
+
+#
+# mesaflash rules
+#
+
+.PHONY: mesaflash.deb
+mesaflash.deb: $(ALL_MESAFLASH_DEBS)
+
+stamps/%/mesaflash.deb: pbuilder/%/base.tgz
+	make stamps/$(*D)/mesaflash.dsc
+	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
+	sudo \
+	    DIST=$(*D) \
+	    ARCH=$(*F) \
+	    TOPDIR=$(shell pwd) \
+	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
+	    pbuilder \
+	        --build \
+	        --configfile pbuilderrc \
+	        dists/$(*D)/main/source/mesaflash_*.dsc
+	
+	# move built files to the deb archive
+	install -d --mode 0755 $(DEB_DIR)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
+	
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
+	
+	mkdir -p $(shell dirname $@)
+	touch $@
+
+
+.PHONY: mesaflash.dsc
+mesaflash.dsc: clean-mesaflash-dsc $(ALL_MESAFLASH_DSCS)
+
+stamps/mesaflash.dsc.build: mesaflash/mesaflash
+	cd $^; dpkg-buildpackage -S -us -uc -I;
+	install --mode 0755 --directory $(shell dirname $@)
+	touch $@
+
+mesaflash/mesaflash:
+	mkdir -p mesaflash
+	cd mesaflash; git clone $(MESAFLASH_GIT)
+	cd mesaflash/mesaflash; git checkout $(MESAFLASH_BRANCH)
+
+clean-mesaflash:
+	rm -rf mesaflash
+
+
 
 
 #
