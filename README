@@ -312,3 +312,17 @@ bunch of ACPI things
 
 PCI_MSI is off
 
+== rtai package fixup
+
+The rtai-modules package is matched to a kernel version, like
+'3.4-9-rtai-686-pae'.  This is reflected in the package name and
+dependencies, and that's good.
+
+It should install in a place that doesnt conflict with other versions
+of itself, just like you can have multiple kernels installed.
+
+It currently installs files in:
+
+    /etc/udev/rules.d (make this one rtai-modules-common?)
+    /usr/realtime-$VERSION
+
