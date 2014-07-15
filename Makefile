@@ -105,6 +105,20 @@ ALL_MESAFLASH_DEBS = $(foreach DIST,$(DISTS),\
         stamps/$(DIST)/$(ARCH)/mesaflash.deb))
 
 
+#
+# truetype-tracer
+#
+
+TRUETYPE_TRACER_GIT = git://timeguy.com/truetype-tracer.git
+TRUETYPE_TRACER_BRANCH = master
+
+ALL_TRUETYPE_TRACER_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/truetype-tracer.dsc)
+
+ALL_TRUETYPE_TRACER_DEBS = $(foreach DIST,$(DISTS),\
+    $(foreach ARCH,$(ARCHES),\
+        stamps/$(DIST)/$(ARCH)/truetype-tracer.deb))
+
+
 WHEEZY_KEY_ID = 6FB2A1C265FFB764
 PRECISE_KEY_ID = 40976EAF437D05B5
 KEY_IDS = $(WHEEZY_KEY_ID) $(PRECISE_KEY_ID)
@@ -330,6 +344,55 @@ mesaflash/mesaflash:
 
 clean-mesaflash:
 	rm -rf mesaflash
+
+
+
+
+#
+# truetype-tracer rules
+#
+
+.PHONY: truetype-tracer.deb
+truetype-tracer.deb: $(ALL_TRUETYPE_TRACER_DEBS)
+
+stamps/%/truetype-tracer.deb: pbuilder/%/base.tgz
+	make stamps/$(*D)/truetype-tracer.dsc
+	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
+	sudo \
+	    DIST=$(*D) \
+	    ARCH=$(*F) \
+	    TOPDIR=$(shell pwd) \
+	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
+	    pbuilder \
+	        --build \
+	        --configfile pbuilderrc \
+	        dists/$(*D)/main/source/truetype-tracer_*.dsc
+	
+	# move built files to the deb archive
+	install -d --mode 0755 $(DEB_DIR)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
+	
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
+	
+	mkdir -p $(shell dirname $@)
+	touch $@
+
+
+.PHONY: truetype-tracer.dsc
+truetype-tracer.dsc: clean-truetype-tracer-dsc $(ALL_TRUETYPE_TRACER_DSCS)
+
+stamps/truetype-tracer.dsc.build: truetype-tracer/truetype-tracer
+	cd $^; dpkg-buildpackage -S -us -uc -I;
+	install --mode 0755 --directory $(shell dirname $@)
+	touch $@
+
+truetype-tracer/truetype-tracer:
+	mkdir -p truetype-tracer
+	cd truetype-tracer; git clone $(TRUETYPE_TRACER_GIT)
+	cd truetype-tracer/truetype-tracer; git checkout $(TRUETYPE_TRACER_BRANCH)
+
+clean-truetype-tracer:
+	rm -rf truetype-tracer
 
 
 
