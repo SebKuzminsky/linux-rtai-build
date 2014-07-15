@@ -283,7 +283,32 @@ Should this target remove any existing dsc's from dists/%/?  Probably not?
 
 http://psha.org.ru/irc/%23emc-devel/2014-07-03.html#15:22:31
 
-[15:22:31] <skunkworks> cradek, jepler, usb ports don't work with rtai kernel - do work with the debian -rt kernel... 
+3.4.55-2linuxcnc:
 
-fixed with 3.4.55-2linuxcnc?
+    [15:22:31] <skunkworks> cradek, jepler, usb ports don't work with rtai kernel - do work with the debian -rt kernel... 
+
+3.4.55-3linuxcnc:
+
+    added these:
+
+    CONFIG_USB_OHCI_HCD_PLATFORM=y
+    CONFIG_USB_EHCI_HCD_PLATFORM=y
+
+    still didnt fix it for skunkworks
+
+    2014-07-10:
+
+        08:00 < pcw_home> stock 10.04 with 2.6.32 RTAI definitely doesn't work
+        08:06 < pcw_home> Even some older stock kernels dont work (the 3.2 that comes with 12.04 doesnt work)
+        08:06 < pcw_home> It may be asking a lot to have RTAI support for the JXXXX CPUs since they are so new
+        
+    but the fact that it works on debian's 3.2 kernel makes me think it could work for us too
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1039245
+
+PCI_IOAPIC is off
+
+bunch of ACPI things
+
+PCI_MSI is off
 
