@@ -277,7 +277,7 @@ and i didn't change the config.  There are other hyperv modules getting built.
 
 == Make a new install-%-deb target, for all to use
 
-Should this target remove any existing dsc's from dists/%/?  Probably not?
+Should this target remove any existing debs from dists/%/?  Probably not?
 
 == usb is broken on skunkworks' machine
 
@@ -311,6 +311,7 @@ PCI_IOAPIC is off
 bunch of ACPI things
 
 PCI_MSI is off
+
 
 == rtai package fixup
 
