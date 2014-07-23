@@ -145,10 +145,6 @@ ALL_RTAI_DEBS = $(foreach DIST,$(DISTS),\
         stamps/$(DIST)/$(ARCH)/rtai.deb))
 
 
-DEB_DIR = dists/$(*D)/main/binary-$(*F)/
-UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
-
-
 #
 # generic rules
 #
@@ -198,6 +194,40 @@ clean-%-dsc:
 	rm -f $*/$*_*.debian.tar.gz
 	rm -f $*/$*_*.orig.tar.xz
 	rm -f stamps/$*.dsc.build
+	rm -f stamps/*/$*.dsc
+
+
+#
+# a rule to build a .deb
+# % (and thus $*) is $DIST/$ARCH/$PACKAGE, for example wheezy/i386/linux
+#
+
+$(foreach D,$(DISTS),$(foreach A,$(ARCHES),stamps/$D/$A/%.deb)): DIST=$(shell echo $@ | cut -d / -f 2)
+$(foreach D,$(DISTS),$(foreach A,$(ARCHES),stamps/$D/$A/%.deb)): ARCH=$(shell echo $@ | cut -d / -f 3)
+$(foreach D,$(DISTS),$(foreach A,$(ARCHES),stamps/$D/$A/%.deb)): PACKAGE=$(shell echo $@ | cut -d / -f 4)
+$(foreach D,$(DISTS),$(foreach A,$(ARCHES),stamps/$D/$A/%.deb)): DEB_DIR=dists/$(DIST)/main/binary-$(ARCH)/
+$(foreach D,$(DISTS),$(foreach A,$(ARCHES),stamps/$D/$A/%.deb)): UDEB_DIR=dists/$(DIST)/main/udeb/binary-$(ARCH)/
+stamps/%.deb: pbuilder/%/base.tgz
+	make stamps/$(DIST)/$(PACKAGE).dsc
+	mkdir -p pbuilder/$(DIST)/$(ARCH)/pkgs
+	sudo \
+	    TOPDIR=$(shell pwd) \
+	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
+	    pbuilder \
+	        --build \
+	        --configfile pbuilderrc \
+	        dists/$(DIST)/main/source/$(PACKAGE)_*.dsc
+	
+	# move built files to the deb archive
+	install -d --mode 0755 $(DEB_DIR)
+	install -d --mode 0755 $(UDEB_DIR)
+	mv pbuilder/$(DIST)/$(ARCH)/pkgs/*.deb $(DEB_DIR)
+	mv -f pbuilder/$(DIST)/$(ARCH)/pkgs/*.udeb $(UDEB_DIR)
+	
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(DIST) $(ARCH)
+	
+	mkdir -p $(shell dirname $@)
+	touch $@
 
 
 #
@@ -206,29 +236,6 @@ clean-%-dsc:
 
 .PHONY: kernel-wedge.deb
 kernel-wedge.deb: $(ALL_KERNEL_WEDGE_DEBS)
-
-stamps/%/kernel-wedge.deb: pbuilder/%/base.tgz
-	make stamps/$(*D)/kernel-wedge.dsc
-	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
-	sudo \
-	    DIST=$(*D) \
-	    ARCH=$(*F) \
-	    TOPDIR=$(shell pwd) \
-	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
-	    pbuilder \
-	        --build \
-	        --configfile pbuilderrc \
-	        dists/$(*D)/main/source/kernel-wedge_*.dsc
-	
-	# move built files to the deb archive
-	install -d --mode 0755 $(DEB_DIR)
-	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
-	
-	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
-	
-	mkdir -p $(shell dirname $@)
-	touch $@
-
 
 .PHONY: kernel-wedge.dsc
 kernel-wedge.dsc: clean-kernel-wedge-dsc $(ALL_KERNEL_WEDGE_DSCS)
@@ -255,29 +262,6 @@ clean-kernel-wedge:
 
 .PHONY: kmod.deb
 kmod.deb: $(ALL_KMOD_DEBS)
-
-stamps/%/kmod.deb: pbuilder/%/base.tgz
-	make stamps/$(*D)/kmod.dsc
-	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
-	sudo \
-	    DIST=$(*D) \
-	    ARCH=$(*F) \
-	    TOPDIR=$(shell pwd) \
-	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
-	    pbuilder \
-	        --build \
-	        --configfile pbuilderrc \
-	        dists/$(*D)/main/source/kmod_*.dsc
-	
-	# move built files to the deb archive
-	install -d --mode 0755 $(DEB_DIR)
-	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
-	
-	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
-	
-	mkdir -p $(shell dirname $@)
-	touch $@
-
 
 .PHONY: kmod.dsc
 kmod.dsc: clean-kmod-dsc $(ALL_KMOD_DSCS)
@@ -306,29 +290,6 @@ clean-kmod:
 .PHONY: mesaflash.deb
 mesaflash.deb: $(ALL_MESAFLASH_DEBS)
 
-stamps/%/mesaflash.deb: pbuilder/%/base.tgz
-	make stamps/$(*D)/mesaflash.dsc
-	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
-	sudo \
-	    DIST=$(*D) \
-	    ARCH=$(*F) \
-	    TOPDIR=$(shell pwd) \
-	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
-	    pbuilder \
-	        --build \
-	        --configfile pbuilderrc \
-	        dists/$(*D)/main/source/mesaflash_*.dsc
-	
-	# move built files to the deb archive
-	install -d --mode 0755 $(DEB_DIR)
-	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
-	
-	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
-	
-	mkdir -p $(shell dirname $@)
-	touch $@
-
-
 .PHONY: mesaflash.dsc
 mesaflash.dsc: clean-mesaflash-dsc $(ALL_MESAFLASH_DSCS)
 
@@ -355,29 +316,6 @@ clean-mesaflash:
 .PHONY: truetype-tracer.deb
 truetype-tracer.deb: $(ALL_TRUETYPE_TRACER_DEBS)
 
-stamps/%/truetype-tracer.deb: pbuilder/%/base.tgz
-	make stamps/$(*D)/truetype-tracer.dsc
-	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
-	sudo \
-	    DIST=$(*D) \
-	    ARCH=$(*F) \
-	    TOPDIR=$(shell pwd) \
-	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
-	    pbuilder \
-	        --build \
-	        --configfile pbuilderrc \
-	        dists/$(*D)/main/source/truetype-tracer_*.dsc
-	
-	# move built files to the deb archive
-	install -d --mode 0755 $(DEB_DIR)
-	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
-	
-	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
-	
-	mkdir -p $(shell dirname $@)
-	touch $@
-
-
 .PHONY: truetype-tracer.dsc
 truetype-tracer.dsc: clean-truetype-tracer-dsc $(ALL_TRUETYPE_TRACER_DSCS)
 
@@ -403,30 +341,6 @@ clean-truetype-tracer:
 
 .PHONY: linux.deb
 linux.deb: $(ALL_LINUX_DEBS)
-
-stamps/%/linux.deb: pbuilder/%/base.tgz
-	make stamps/$(*D)/linux.dsc
-	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
-	sudo \
-	    DIST=$(*D) \
-	    ARCH=$(*F) \
-	    TOPDIR=$(shell pwd) \
-	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
-	    pbuilder \
-	        --build \
-	        --configfile pbuilderrc \
-	        dists/$(*D)/main/source/linux_*.dsc
-	
-	# move built files to the deb archive
-	install -d --mode 0755 $(UDEB_DIR)
-	install -d --mode 0755 $(DEB_DIR)
-	mv pbuilder/$(*D)/$(*F)/pkgs/*.udeb $(UDEB_DIR)
-	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
-	
-	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
-	
-	mkdir -p $(shell dirname $@)
-	touch $@
 
 .PHONY: linux.dsc
 linux.dsc: clean-linux-dsc $(ALL_LINUX_DSCS)
@@ -472,28 +386,6 @@ clean-kernel:
 .PHONY: linux-tools.deb
 linux-tools.deb: $(ALL_LINUX_TOOLS_DEBS)
 
-stamps/%/linux-tools.deb: pbuilder/%/base.tgz
-	make stamps/$(*D)/linux-tools.dsc
-	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
-	sudo \
-	    DIST=$(*D) \
-	    ARCH=$(*F) \
-	    TOPDIR=$(shell pwd) \
-	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
-	    pbuilder \
-	        --build \
-	        --configfile pbuilderrc \
-	        dists/$(*D)/main/source/linux-tools_*.dsc
-	
-	# move built files to the deb archive
-	install -d --mode 0755 $(DEB_DIR)
-	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
-	
-	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
-	
-	mkdir -p $(shell dirname $@)
-	touch $@
-
 .PHONY: linux-tools.dsc
 linux-tools.dsc: clean-linux-tools-dsc $(ALL_LINUX_TOOLS_DSCS)
 
@@ -522,28 +414,6 @@ linux-tools/linux-tools/debian/rules: linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 
 .PHONY: rtai.deb
 rtai.deb: $(ALL_RTAI_DEBS)
-
-stamps/%/rtai.deb: pbuilder/%/base.tgz
-	make stamps/$(*D)/rtai.dsc
-	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
-	sudo \
-	    DIST=$(*D) \
-	    ARCH=$(*F) \
-	    TOPDIR=$(shell pwd) \
-	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
-	    pbuilder \
-	        --build \
-	        --configfile pbuilderrc \
-	        dists/$(*D)/main/source/rtai_*.dsc
-	
-	# move built files to the deb archive
-	install -d --mode 0755 $(DEB_DIR)
-	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
-	
-	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
-	
-	mkdir -p $(shell dirname $@)
-	touch $@
 
 .PHONY: rtai.dsc
 rtai.dsc: clean-rtai-dsc $(ALL_RTAI_DSCS)
