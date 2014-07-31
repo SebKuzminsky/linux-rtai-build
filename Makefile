@@ -115,7 +115,7 @@ MESAFLASH_BRANCH = master
 ALL_MESAFLASH_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/mesaflash.dsc)
 
 ALL_MESAFLASH_DEBS = $(foreach DIST,$(DISTS),\
-    $(foreach ARCH,$(ARCHES),\
+    $(foreach ARCH,i386 amd64,\
         stamps/$(DIST)/$(ARCH)/mesaflash.deb))
 
 
@@ -129,7 +129,7 @@ TRUETYPE_TRACER_BRANCH = master
 ALL_TRUETYPE_TRACER_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/truetype-tracer.dsc)
 
 ALL_TRUETYPE_TRACER_DEBS = $(foreach DIST,$(DISTS),\
-    $(foreach ARCH,$(ARCHES),\
+    $(foreach ARCH,amd64 i386,\
         stamps/$(DIST)/$(ARCH)/truetype-tracer.deb))
 
 
