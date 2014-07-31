@@ -626,10 +626,11 @@ rtai/rtai/debian/rules.in:
 .PRECIOUS: pbuilder/%/base.tgz
 pbuilder/%/base.tgz: pbuilder/keyring.gpg stamps/%/deb-archive
 	mkdir -p dists/$(*D)/main/source
+	mkdir -p dists/$(*D)/main/binary-i386
+	mkdir -p dists/$(*D)/main/binary-amd64
 	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) source
-	
-	mkdir -p dists/$(*D)/main/binary-$(*F)
-	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) i386
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) amd64
 	
 	if [ -f pbuilder/$(*D)/$(*F)/base.tgz ]; then \
 		sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --update --configfile pbuilderrc; \

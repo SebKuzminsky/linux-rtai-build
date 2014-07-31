@@ -327,3 +327,7 @@ It currently installs files in:
     /etc/udev/rules.d (make this one rtai-modules-common?)
     /usr/realtime-$VERSION
 
+== update-deb-archive doesn't need ARCH
+
+The makefile stamps do
+
