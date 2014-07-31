@@ -61,11 +61,13 @@ LINUX_TARBALL_KERNEL_ORG = linux-$(LINUX_VERSION).tar.xz
 # debian packaging wants
 LINUX_TARBALL = linux_$(LINUX_VERSION).orig.tar.xz
 
+ALL_LINUX_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/linux.dsc)
 
-#
+ALL_LINUX_DEBS = $(foreach DIST,$(DISTS),\
+    $(foreach ARCH,$(ARCHES),\
+        stamps/$(DIST)/$(ARCH)/linux.deb))
+
 # this is the linux/debian directory for the rtai-patched kernel
-#
-
 LINUX_RTAI_DEBIAN_GIT = ssh://highlab.com/home/seb/linux-rtai-debian.git
 LINUX_RTAI_DEBIAN_BRANCH = 3.4.55-rtai
 
@@ -78,6 +80,12 @@ LINUX_RTAI_DEBIAN_BRANCH = 3.4.55-rtai
 LINUX_TOOLS_GIT = ssh://highlab.com/home/seb/linux-tools.git
 LINUX_TOOLS_BRANCH = 3.4
 
+ALL_LINUX_TOOLS_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/linux-tools.dsc)
+
+ALL_LINUX_TOOLS_DEBS = $(foreach DIST,$(DISTS),\
+    $(foreach ARCH,$(ARCHES),\
+        stamps/$(DIST)/$(ARCH)/linux-tools.deb))
+
 
 #
 # rtai
@@ -89,6 +97,12 @@ RTAI_GIT = ssh://highlab.com/home/seb/rtai.git
 
 #RTAI_BRANCH = deb-packaging
 RTAI_BRANCH = old-3.9-debs
+
+ALL_RTAI_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/rtai.dsc)
+
+ALL_RTAI_DEBS = $(foreach DIST,$(DISTS),\
+    $(foreach ARCH,$(ARCHES),\
+        stamps/$(DIST)/$(ARCH)/rtai.deb))
 
 
 #
@@ -119,31 +133,13 @@ ALL_TRUETYPE_TRACER_DEBS = $(foreach DIST,$(DISTS),\
         stamps/$(DIST)/$(ARCH)/truetype-tracer.deb))
 
 
+#
+# random shared metadata
+#
+
 WHEEZY_KEY_ID = 6FB2A1C265FFB764
 PRECISE_KEY_ID = 40976EAF437D05B5
 KEY_IDS = $(WHEEZY_KEY_ID) $(PRECISE_KEY_ID)
-
-
-ALL_LINUX_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/linux.dsc)
-
-ALL_LINUX_DEBS = $(foreach DIST,$(DISTS),\
-    $(foreach ARCH,$(ARCHES),\
-        stamps/$(DIST)/$(ARCH)/linux.deb))
-
-
-ALL_LINUX_TOOLS_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/linux-tools.dsc)
-
-ALL_LINUX_TOOLS_DEBS = $(foreach DIST,$(DISTS),\
-    $(foreach ARCH,$(ARCHES),\
-        stamps/$(DIST)/$(ARCH)/linux-tools.deb))
-
-
-ALL_RTAI_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/rtai.dsc)
-
-ALL_RTAI_DEBS = $(foreach DIST,$(DISTS),\
-    $(foreach ARCH,$(ARCHES),\
-        stamps/$(DIST)/$(ARCH)/rtai.deb))
-
 
 DEB_DIR = dists/$(*D)/main/binary-$(*F)/
 UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
