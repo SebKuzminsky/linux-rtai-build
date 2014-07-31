@@ -559,7 +559,7 @@ stamps/%/glade-3.deb: pbuilder/%/base.tgz
 	touch $@
 
 .PHONY: glade-3.dsc
-glade.dsc: clean-glade-3-dsc $(ALL_GLADE-3_DSCS)
+glade-3.dsc: clean-glade-3-dsc $(ALL_GLADE-3_DSCS)
 
 stamps/glade-3.dsc.build:
 	mkdir -p glade-3
