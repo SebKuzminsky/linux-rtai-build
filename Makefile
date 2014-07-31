@@ -134,6 +134,23 @@ ALL_TRUETYPE_TRACER_DEBS = $(foreach DIST,$(DISTS),\
 
 
 #
+# glade-3
+# needed on wheezy to change our glade-based guis
+# from here: http://packages.ubuntu.com/source/trusty/glade-3
+#
+
+GLADE-3_URLS = http://archive.ubuntu.com/ubuntu/pool/universe/g/glade-3/glade-3_3.8.0-0ubuntu6.dsc \
+    http://archive.ubuntu.com/ubuntu/pool/universe/g/glade-3/glade-3_3.8.0.orig.tar.gz \
+    http://archive.ubuntu.com/ubuntu/pool/universe/g/glade-3/glade-3_3.8.0-0ubuntu6.debian.tar.gz
+
+ALL_GLADE-3_DSCS = $(foreach DIST,wheezy,stamps/$(DIST)/glade-3.dsc)
+
+ALL_GLADE-3_DEBS = $(foreach DIST,wheezy,\
+    $(foreach ARCH,i386 amd64,\
+        stamps/$(DIST)/$(ARCH)/glade-3.deb))
+
+
+#
 # random shared metadata
 #
 
@@ -510,6 +527,45 @@ linux-tools/linux-tools/debian/rules: linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 	install -d --mode 0755 linux-tools/linux-tools
 	(cd linux-tools/linux-tools; git clone $(LINUX_TOOLS_GIT) debian)
 	(cd linux-tools/linux-tools/debian; git checkout $(LINUX_TOOLS_BRANCH))
+
+
+#
+# glade-3
+#
+
+.PHONY: glade-3.deb
+glade-3.deb: $(ALL_GLADE-3_DEBS)
+
+stamps/%/glade-3.deb: pbuilder/%/base.tgz
+	make stamps/$(*D)/glade-3.dsc
+	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
+	sudo \
+	    DIST=$(*D) \
+	    ARCH=$(*F) \
+	    TOPDIR=$(shell pwd) \
+	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
+	    pbuilder \
+	        --build \
+	        --configfile pbuilderrc \
+	        dists/$(*D)/main/source/glade-3_*.dsc
+	
+	# move built files to the deb archive
+	install -d --mode 0755 $(DEB_DIR)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
+	
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
+	
+	mkdir -p $(shell dirname $@)
+	touch $@
+
+.PHONY: glade-3.dsc
+glade.dsc: clean-glade-3-dsc $(ALL_GLADE-3_DSCS)
+
+stamps/glade-3.dsc.build:
+	mkdir -p glade-3
+	cd glade-3; for G in $(GLADE-3_URLS); do curl -O $$G; done
+	mkdir -p $(shell dirname $@)
+	touch $@
 
 
 #
