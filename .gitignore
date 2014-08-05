@@ -11,3 +11,6 @@ ccache/
 packages-*.db
 kmod/
 kernel-wedge/
+glade-3/
+mesaflash/
+truetype-tracer/
