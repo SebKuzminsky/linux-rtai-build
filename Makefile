@@ -471,8 +471,8 @@ linux/orig/$(LINUX_TARBALL): linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 	(cd $(shell dirname $@); cp $(LINUX_TARBALL_KERNEL_ORG) $(LINUX_TARBALL))
 
 # this removes everything but the upstream tarball
-.PHONY: clean-kernel
-clean-kernel:
+.PHONY: clean-linux
+clean-linux:
 	rm -rf linux/linux-$(LINUX_VERSION)
 	rm -f linux/linux_$(LINUX_VERSION)*
 	rm -f $(ALL_LINUX_DSCS) stamps/linux.dsc.build
