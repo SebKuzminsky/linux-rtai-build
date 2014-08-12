@@ -661,6 +661,10 @@ clean-pbuilder:
 # misc rules
 #
 
+.PHONY: dists
+dists:
+	bash -c 'mkdir -p dists/{wheezy,precise}/main/{source,binary-{i386,amd64}}'
+
 .PRECIOUS: stamps/%/deb-archive
 stamps/%/deb-archive:
 	mkdir -p dists/$(*D)/main/source
