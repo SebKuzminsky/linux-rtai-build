@@ -528,6 +528,10 @@ linux-tools/linux-tools/debian/rules: linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 	(cd linux-tools/linux-tools; git clone $(LINUX_TOOLS_GIT) debian)
 	(cd linux-tools/linux-tools/debian; git checkout $(LINUX_TOOLS_BRANCH))
 
+.PHONY: clean-linux-tools
+clean-linux-tools:
+	rm -rf linux-tools
+
 
 #
 # glade-3
