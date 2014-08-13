@@ -255,8 +255,6 @@ My old rtai debs were based on:
 
 The .orig.tar.xz is the same but the other files have different md5sums.
 
-== Rebuild everything from scratch to find startup transients
-
 == build rtai-modules for the rtai-486 linux-image package
 
 == try to get amd64 going again
