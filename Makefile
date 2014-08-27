@@ -92,8 +92,8 @@ ALL_LINUX_TOOLS_DEBS = $(foreach DIST,$(DISTS),\
 #
 
 # ShabbyX RTAI fork, my branch adds debian packaging
-#RTAI_GIT = https://github.com/SebKuzminsky/rtai.git
-RTAI_GIT = ssh://highlab.com/home/seb/rtai.git
+RTAI_GIT = https://github.com/SebKuzminsky/rtai.git
+#RTAI_GIT = ssh://highlab.com/home/seb/rtai.git
 
 #RTAI_BRANCH = deb-packaging
 RTAI_BRANCH = old-3.9-debs
