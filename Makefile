@@ -3,8 +3,8 @@
 # Override these in the environment as you wish.
 #
 
-DISTS ?= wheezy precise
-ARCHES ?= i386
+DISTS ?= wheezy precise lucid
+ARCHES ?= i386 amd64
 
 LINUX_IMAGE_VERSION ?= 3.4-9-rtai-686-pae
 
@@ -27,7 +27,7 @@ KERNEL_WEDGE_BRANCH = 2.84
 ALL_KERNEL_WEDGE_DSCS = $(foreach DIST,precise,stamps/$(DIST)/kernel-wedge.dsc)
 
 ALL_KERNEL_WEDGE_DEBS = $(foreach DIST,precise,\
-    $(foreach ARCH,$(ARCHES),\
+    $(foreach ARCH,i386,\
         stamps/$(DIST)/$(ARCH)/kernel-wedge.deb))
 
 
@@ -42,7 +42,7 @@ KMOD_BRANCH = master
 ALL_KMOD_DSCS = $(foreach DIST,precise,stamps/$(DIST)/kmod.dsc)
 
 ALL_KMOD_DEBS = $(foreach DIST,precise,\
-    $(foreach ARCH,$(ARCHES),\
+    $(foreach ARCH,i386,\
         stamps/$(DIST)/$(ARCH)/kmod.deb))
 
 
@@ -61,10 +61,10 @@ LINUX_TARBALL_KERNEL_ORG = linux-$(LINUX_VERSION).tar.xz
 # debian packaging wants
 LINUX_TARBALL = linux_$(LINUX_VERSION).orig.tar.xz
 
-ALL_LINUX_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/linux.dsc)
+ALL_LINUX_DSCS = $(foreach DIST,wheezy precise,stamps/$(DIST)/linux.dsc)
 
-ALL_LINUX_DEBS = $(foreach DIST,$(DISTS),\
-    $(foreach ARCH,$(ARCHES),\
+ALL_LINUX_DEBS = $(foreach DIST,wheezy precise,\
+    $(foreach ARCH,i386,\
         stamps/$(DIST)/$(ARCH)/linux.deb))
 
 # this is the linux/debian directory for the rtai-patched kernel
@@ -80,10 +80,10 @@ LINUX_RTAI_DEBIAN_BRANCH = 3.4.55-rtai
 LINUX_TOOLS_GIT = ssh://highlab.com/home/seb/linux-tools.git
 LINUX_TOOLS_BRANCH = 3.4
 
-ALL_LINUX_TOOLS_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/linux-tools.dsc)
+ALL_LINUX_TOOLS_DSCS = $(foreach DIST,wheezy precise,stamps/$(DIST)/linux-tools.dsc)
 
-ALL_LINUX_TOOLS_DEBS = $(foreach DIST,$(DISTS),\
-    $(foreach ARCH,$(ARCHES),\
+ALL_LINUX_TOOLS_DEBS = $(foreach DIST,wheezy precise,\
+    $(foreach ARCH,i386,\
         stamps/$(DIST)/$(ARCH)/linux-tools.deb))
 
 
@@ -98,10 +98,10 @@ RTAI_GIT = https://github.com/SebKuzminsky/rtai.git
 #RTAI_BRANCH = deb-packaging
 RTAI_BRANCH = old-3.9-debs
 
-ALL_RTAI_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/rtai.dsc)
+ALL_RTAI_DSCS = $(foreach DIST,wheezy precise,stamps/$(DIST)/rtai.dsc)
 
-ALL_RTAI_DEBS = $(foreach DIST,$(DISTS),\
-    $(foreach ARCH,$(ARCHES),\
+ALL_RTAI_DEBS = $(foreach DIST,wheezy precise,\
+    $(foreach ARCH,i386,\
         stamps/$(DIST)/$(ARCH)/rtai.deb))
 
 
@@ -112,9 +112,9 @@ ALL_RTAI_DEBS = $(foreach DIST,$(DISTS),\
 MESAFLASH_GIT = https://github.com/micges/mesaflash.git
 MESAFLASH_BRANCH = master
 
-ALL_MESAFLASH_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/mesaflash.dsc)
+ALL_MESAFLASH_DSCS = $(foreach DIST,wheezy precise lucid,stamps/$(DIST)/mesaflash.dsc)
 
-ALL_MESAFLASH_DEBS = $(foreach DIST,$(DISTS),\
+ALL_MESAFLASH_DEBS = $(foreach DIST,wheezy precise lucid,\
     $(foreach ARCH,i386 amd64,\
         stamps/$(DIST)/$(ARCH)/mesaflash.deb))
 
@@ -126,9 +126,9 @@ ALL_MESAFLASH_DEBS = $(foreach DIST,$(DISTS),\
 TRUETYPE_TRACER_GIT = git://timeguy.com/truetype-tracer.git
 TRUETYPE_TRACER_BRANCH = master
 
-ALL_TRUETYPE_TRACER_DSCS = $(foreach DIST,$(DISTS),stamps/$(DIST)/truetype-tracer.dsc)
+ALL_TRUETYPE_TRACER_DSCS = $(foreach DIST,wheezy precise lucid,stamps/$(DIST)/truetype-tracer.dsc)
 
-ALL_TRUETYPE_TRACER_DEBS = $(foreach DIST,$(DISTS),\
+ALL_TRUETYPE_TRACER_DEBS = $(foreach DIST,wheezy precise lucid,\
     $(foreach ARCH,amd64 i386,\
         stamps/$(DIST)/$(ARCH)/truetype-tracer.deb))
 
@@ -155,8 +155,8 @@ ALL_GLADE-3_DEBS = $(foreach DIST,wheezy,\
 #
 
 WHEEZY_KEY_ID = 6FB2A1C265FFB764
-PRECISE_KEY_ID = 40976EAF437D05B5
-KEY_IDS = $(WHEEZY_KEY_ID) $(PRECISE_KEY_ID)
+UBUNTU_KEY_ID = 40976EAF437D05B5
+KEY_IDS = $(WHEEZY_KEY_ID) $(UBUNTU_KEY_ID)
 
 DEB_DIR = dists/$(*D)/main/binary-$(*F)/
 UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
@@ -667,7 +667,7 @@ clean-pbuilder:
 
 .PHONY: dists
 dists:
-	bash -c 'mkdir -p dists/{wheezy,precise}/main/{source,binary-{i386,amd64}}'
+	bash -c 'mkdir -p dists/{wheezy,precise,lucid}/main/{source,binary-{i386,amd64}}'
 
 .PRECIOUS: stamps/%/deb-archive
 stamps/%/deb-archive:

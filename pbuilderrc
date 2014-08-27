@@ -28,7 +28,7 @@ DEBIAN_SUITES=("wheezy")
 DEBIAN_MIRROR="ftp.debian.org"
 
 # Ubuntu configuration
-UBUNTU_SUITES=("precise")
+UBUNTU_SUITES=("precise" "lucid")
 UBUNTU_MIRROR="ftp.ubuntu.com"
 
 # Keyring file
