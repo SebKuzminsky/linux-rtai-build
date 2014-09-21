@@ -36,7 +36,7 @@ ALL_KERNEL_WEDGE_DEBS = $(foreach DIST,precise,\
 # debian.org packaging of the linux kernel
 #
 
-KMOD_GIT = ssh://highlab.com/home/seb/kmod.git
+KMOD_GIT = https://github.com/SebKuzminsky/kmod.git
 KMOD_BRANCH = master
 
 ALL_KMOD_DSCS = $(foreach DIST,precise,stamps/$(DIST)/kmod.dsc)
@@ -68,7 +68,7 @@ ALL_LINUX_DEBS = $(foreach DIST,wheezy precise,\
         stamps/$(DIST)/$(ARCH)/linux.deb))
 
 # this is the linux/debian directory for the rtai-patched kernel
-LINUX_RTAI_DEBIAN_GIT = ssh://highlab.com/home/seb/linux-rtai-debian.git
+LINUX_RTAI_DEBIAN_GIT = https://github.com/SebKuzminsky/linux-rtai-debian.git
 LINUX_RTAI_DEBIAN_BRANCH = 3.4.55-rtai
 
 
@@ -77,7 +77,7 @@ LINUX_RTAI_DEBIAN_BRANCH = 3.4.55-rtai
 # a specific version of the debian.org upstream, with minor tweaks
 #
 
-LINUX_TOOLS_GIT = ssh://highlab.com/home/seb/linux-tools.git
+LINUX_TOOLS_GIT = https://github.com/SebKuzminsky/linux-tools-deb.git
 LINUX_TOOLS_BRANCH = 3.4
 
 ALL_LINUX_TOOLS_DSCS = $(foreach DIST,wheezy precise,stamps/$(DIST)/linux-tools.dsc)
