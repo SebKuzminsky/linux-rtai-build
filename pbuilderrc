@@ -24,7 +24,7 @@ fi
 # DEBEMAIL='John Doe <jdoe@example.com>'
 
 # Debian configuration
-DEBIAN_SUITES=("wheezy")
+DEBIAN_SUITES=("jessie" "wheezy")
 DEBIAN_MIRROR="ftp.debian.org"
 
 # Ubuntu configuration

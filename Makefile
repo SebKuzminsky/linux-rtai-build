@@ -3,7 +3,7 @@
 # Override these in the environment as you wish.
 #
 
-DISTS ?= wheezy precise lucid
+DISTS ?= jessie wheezy precise lucid
 ARCHES ?= i386 amd64
 
 LINUX_IMAGE_VERSION ?= 3.4-9-rtai-686-pae
