@@ -110,11 +110,11 @@ ALL_RTAI_DEBS = $(foreach DIST,wheezy precise,\
 #
 
 MESAFLASH_GIT = https://github.com/micges/mesaflash.git
-MESAFLASH_BRANCH = v3.1
+MESAFLASH_BRANCH = v3.2
 
-ALL_MESAFLASH_DSCS = $(foreach DIST,wheezy precise lucid,stamps/$(DIST)/mesaflash.dsc)
+ALL_MESAFLASH_DSCS = $(foreach DIST,jessie wheezy precise lucid,stamps/$(DIST)/mesaflash.dsc)
 
-ALL_MESAFLASH_DEBS = $(foreach DIST,wheezy precise lucid,\
+ALL_MESAFLASH_DEBS = $(foreach DIST,jessie wheezy precise lucid,\
     $(foreach ARCH,i386 amd64,\
         stamps/$(DIST)/$(ARCH)/mesaflash.deb))
 
