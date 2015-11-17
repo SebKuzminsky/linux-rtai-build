@@ -15,7 +15,7 @@ This Makefile does all building inside pbuilder chroots.
 The things it fetches and builds are:
 
     * linux (tarball from kernel.org, debian/ directory from seb's repo
-        based on debian.org's svn repo)
+        based on debian.org's linux.git repo)
 
     * linux-tools (used for building out-of-tree kernel modules, we use
         a specific version of debian.org's package, plus some minor
@@ -63,35 +63,44 @@ make rtai.deb
 
 = Modifying/updating Linux or RTAI
 
-The original packaging of Linux/RTAI targets Linux 3.4.87 and RTAI 4.0
-*plus* the ShabbyX/memleak mods.  So not RTAI 4.0 from Paolo.
+This build system pulls together software from three different places:
 
-I currently have the following RTAI branches:
+* The Linux kernel, from kernel.org
 
-    * old-3.9-debs
+* The debian packaging of the Linux kernel, from debian.org
 
-        This branch successfully builds debs.  It starts with what i build
-        3.4.55-rtai-2 from, plus:
+* The RTAI kernel patch and userspace, from rtai.org
 
-        * support 3.4.87
+All three have to have matching versions.  The RTAI kernel patch targets
+a few specific Linux kernel versions.  The debian kernel packaging is
+available for lots of kernel versions.
 
-        * build in pbuilder (build against linux-headers instead of a built
-            linux source tree, improved build-dependencies, add
-            debian/configure like in linuxcnc)
+So the process is roughly this:
 
-    * deb-packaging
+* Find the RTAI kernel patch you want to use.
 
-        Rebased, cleaned up version of old-3.9-debs.
-
-        This is the good one.
-
-    * shabby/linuxcnc-old
-
-        This is basically the tree from the old known-good commit
-        a0dc5355, with the kernel patch bumped to 3.4.96.
+* Find the Debian packaging for the kernel version targetted by the RTAI
+  kernel patch.
 
 
 == Modifying/updating Linux
+
+Debian now manages the kernel debian packaging in git:
+
+----
+The package repositories are available at:
+
+git+ssh://git.debian.org/git/kernel/firmware-free.git
+git+ssh://git.debian.org/git/kernel/firmware-nonfree.git
+git+ssh://git.debian.org/git/kernel/linux.git
+git+ssh://git.debian.org/git/kernel/linux-base.git
+git+ssh://git.debian.org/git/kernel/linux-latest.git
+git+ssh://git.debian.org/git/kernel/linux-tools.git
+
+and non-packaged documentation and scripts are in:
+
+git+ssh://git.debian.org/git/kernel/kernel-team.git
+-----
 
 The linux/linux-$(LINUX_VERSION/debian directory is a checkout of a
 git branch.  The git repo is cloned and the branch checked out by make
