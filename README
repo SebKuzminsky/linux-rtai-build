@@ -238,6 +238,10 @@ My old rtai debs were based on:
 
 = Old notes to self
 
+to add a new key to the pbuilder keyring:  gpg --verbose --keyring pbuilder/keyring.gpg --no-default-keyring --recv-keys CBF8D6FD518E17E1
+
+apt-get install python-six
+
 == linux
 
     To build all debs:
