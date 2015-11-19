@@ -6,7 +6,7 @@
 DISTS ?= jessie wheezy precise lucid
 ARCHES ?= i386 amd64
 
-LINUX_IMAGE_VERSION ?= 3.4-9-rtai-686-pae
+LINUX_IMAGE_VERSION ?= 3.16.0-9-rtai-686-pae
 
 ARCHIVE_SIGNING_KEY = 'Linux/RTAI deb archive signing key'
 
@@ -50,26 +50,25 @@ ALL_KMOD_DEBS = $(foreach DIST,precise,\
 # linux
 #
 
-LINUX_VERSION = 3.4.55
+LINUX_VERSION = 3.16.7
 
-# this is the URL of the tarball at kernel.org
-LINUX_TARBALL_URL = https://www.kernel.org/pub/linux/kernel/v3.x/linux-$(LINUX_VERSION).tar.xz
-
+# this is the name and URL of the tarball at kernel.org
 LINUX_TARBALL_KERNEL_ORG = linux-$(LINUX_VERSION).tar.xz
+LINUX_TARBALL_URL = https://www.kernel.org/pub/linux/kernel/v3.x/$(LINUX_TARBALL_KERNEL_ORG)
 
-# this is what we'll call the tarball locally, since this is the name the
-# debian packaging wants
-LINUX_TARBALL = linux_$(LINUX_VERSION).orig.tar.xz
+# This tarball is made by the debian kernel scripts from the kernel.org
+# tarball by removing non-free firmwares, etc.
+LINUX_TARBALL_ORIG = linux_$(LINUX_VERSION).orig.tar.xz
 
-ALL_LINUX_DSCS = $(foreach DIST,wheezy precise,stamps/$(DIST)/linux.dsc)
+ALL_LINUX_DSCS = $(foreach DIST,jessie,stamps/$(DIST)/linux.dsc)
 
-ALL_LINUX_DEBS = $(foreach DIST,wheezy precise,\
+ALL_LINUX_DEBS = $(foreach DIST,jessie,\
     $(foreach ARCH,i386,\
         stamps/$(DIST)/$(ARCH)/linux.deb))
 
 # this is the linux/debian directory for the rtai-patched kernel
 LINUX_RTAI_DEBIAN_GIT = https://github.com/SebKuzminsky/linux-rtai-debian.git
-LINUX_RTAI_DEBIAN_BRANCH = 3.4.55-rtai
+LINUX_RTAI_DEBIAN_BRANCH = 3.16.7-rtai
 
 
 #
@@ -447,7 +446,7 @@ linux.dsc: clean-linux-dsc $(ALL_LINUX_DSCS)
 # Prepare the linux sources and the debian packaging, then make the dsc.
 # FIXME: This emits an ugly error message
 stamps/linux.dsc.build: linux/linux-$(LINUX_VERSION)
-	cp linux/orig/$(LINUX_TARBALL) linux/
+	ln -s orig/$(LINUX_TARBALL_ORIG) linux
 	( \
 		cd $^; \
 		fakeroot debian/rules source || true; \
@@ -456,19 +455,23 @@ stamps/linux.dsc.build: linux/linux-$(LINUX_VERSION)
 	install --mode 0755 --directory $(shell dirname $@)
 	touch $@
 
-linux/linux-$(LINUX_VERSION): linux/orig/$(LINUX_TARBALL)
+linux/linux-$(LINUX_VERSION): linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 	rm -rf linux/linux-$(LINUX_VERSION)
+	rm -f linux/orig/$(LINUX_TARBALL_ORIG)
+	rm -f linux/$(LINUX_TARBALL_ORIG)
+	rm -rf linux/orig/linux-$(LINUX_VERSION)
 	mkdir -p linux/linux-$(LINUX_VERSION)
-	git clone $(LINUX_RTAI_DEBIAN_GIT) linux/linux-$(LINUX_VERSION)/debian
-	(cd linux/linux-$(LINUX_VERSION)/debian; git checkout $(LINUX_RTAI_DEBIAN_BRANCH))
-	(cd $@; fakeroot debian/rules orig)
+	git clone -b $(LINUX_RTAI_DEBIAN_BRANCH) $(LINUX_RTAI_DEBIAN_GIT) linux/linux-$(LINUX_VERSION)
+	( \
+		cd linux/linux-$(LINUX_VERSION); \
+		./debian/bin/genorig.py ../orig/$(LINUX_TARBALL_KERNEL_ORG); \
+		fakeroot ./debian/rules orig; \
+	)
 
 linux/orig/$(LINUX_TARBALL_KERNEL_ORG):
 	mkdir -p $(shell dirname $@)
 	(cd $(shell dirname $@); curl -O $(LINUX_TARBALL_URL))
 
-linux/orig/$(LINUX_TARBALL): linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
-	(cd $(shell dirname $@); cp $(LINUX_TARBALL_KERNEL_ORG) $(LINUX_TARBALL))
 
 # this removes everything but the upstream tarball
 .PHONY: clean-linux
