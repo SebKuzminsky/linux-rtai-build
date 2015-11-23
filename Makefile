@@ -92,14 +92,12 @@ ALL_LINUX_TOOLS_DEBS = $(foreach DIST,wheezy precise,\
 
 # ShabbyX RTAI fork, my branch adds debian packaging
 RTAI_GIT = https://github.com/SebKuzminsky/rtai.git
-#RTAI_GIT = ssh://highlab.com/home/seb/rtai.git
 
-#RTAI_BRANCH = deb-packaging
-RTAI_BRANCH = old-3.9-debs
+RTAI_BRANCH = vulcano-debs
 
-ALL_RTAI_DSCS = $(foreach DIST,wheezy precise,stamps/$(DIST)/rtai.dsc)
+ALL_RTAI_DSCS = $(foreach DIST,jessie,stamps/$(DIST)/rtai.dsc)
 
-ALL_RTAI_DEBS = $(foreach DIST,wheezy precise,\
+ALL_RTAI_DEBS = $(foreach DIST,jessie,\
     $(foreach ARCH,i386,\
         stamps/$(DIST)/$(ARCH)/rtai.deb))
 
@@ -612,7 +610,6 @@ stamps/rtai.dsc.build: rtai/rtai/debian/rules.in
 		cd rtai/rtai; \
 		debian/configure $(LINUX_IMAGE_VERSION); \
 		debian/update-dch-from-git; \
-		./autogen.sh; \
 		dpkg-buildpackage -S -us -uc -I; \
 	)
 	mkdir -p $(shell dirname $@)
