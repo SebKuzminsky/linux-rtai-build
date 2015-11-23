@@ -63,7 +63,7 @@ LINUX_TARBALL_ORIG = linux_$(LINUX_VERSION).orig.tar.xz
 ALL_LINUX_DSCS = $(foreach DIST,jessie,stamps/$(DIST)/linux.dsc)
 
 ALL_LINUX_DEBS = $(foreach DIST,jessie,\
-    $(foreach ARCH,i386,\
+    $(foreach ARCH,i386 amd64,\
         stamps/$(DIST)/$(ARCH)/linux.deb))
 
 # this is the linux/debian directory for the rtai-patched kernel
