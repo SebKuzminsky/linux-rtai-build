@@ -6,7 +6,9 @@
 DISTS ?= jessie wheezy precise lucid
 ARCHES ?= i386 amd64
 
-LINUX_IMAGE_VERSION ?= 3.16.0-9-rtai-686-pae
+LINUX_IMAGE_VERSION ?= 3.16.0-9
+FEATURESET ?= rtai
+LINUX_IMAGE_FLAVORS ?= 686-pae amd64
 
 ARCHIVE_SIGNING_KEY = 'Linux/RTAI deb archive signing key'
 
@@ -98,7 +100,7 @@ RTAI_BRANCH = vulcano-debs
 ALL_RTAI_DSCS = $(foreach DIST,jessie,stamps/$(DIST)/rtai.dsc)
 
 ALL_RTAI_DEBS = $(foreach DIST,jessie,\
-    $(foreach ARCH,i386,\
+    $(foreach ARCH,i386 amd64,\
         stamps/$(DIST)/$(ARCH)/rtai.deb))
 
 
@@ -608,7 +610,7 @@ rtai.dsc: clean-rtai-dsc $(ALL_RTAI_DSCS)
 stamps/rtai.dsc.build: rtai/rtai/debian/rules.in
 	( \
 		cd rtai/rtai; \
-		debian/configure $(LINUX_IMAGE_VERSION); \
+		debian/configure $(LINUX_IMAGE_VERSION) $(FEATURESET) $(LINUX_IMAGE_FLAVORS); \
 		debian/update-dch-from-git; \
 		dpkg-buildpackage -S -us -uc -I; \
 	)
