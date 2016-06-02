@@ -133,6 +133,20 @@ ALL_TRUETYPE_TRACER_DEBS = $(foreach DIST,wheezy precise lucid,\
 
 
 #
+# f-engrave
+#
+
+F_ENGRAVE_GIT = git://github.com/SebKuzminsky/f-engrave.git
+F_ENGRAVE_BRANCH = master
+
+ALL_F_ENGRAVE_DSCS = $(foreach DIST,jessie wheezy precise,stamps/$(DIST)/f-engrave.dsc)
+
+ALL_F_ENGRAVE_DEBS = $(foreach DIST,jessie wheezy precise,\
+    $(foreach ARCH,amd64 i386,\
+        stamps/$(DIST)/$(ARCH)/f-engrave.deb))
+
+
+#
 # glade-3
 # needed on wheezy to change our glade-based guis
 # from here: http://packages.ubuntu.com/source/trusty/glade-3
@@ -405,6 +419,55 @@ truetype-tracer/truetype-tracer:
 
 clean-truetype-tracer:
 	rm -rf truetype-tracer
+
+
+
+
+#
+# f-engrave rules
+#
+
+.PHONY: f-engrave.deb
+f-engrave.deb: $(ALL_F_ENGRAVE_DEBS)
+
+stamps/%/f-engrave.deb: pbuilder/%/base.tgz
+	make stamps/$(*D)/f-engrave.dsc
+	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
+	sudo \
+	    DIST=$(*D) \
+	    ARCH=$(*F) \
+	    TOPDIR=$(shell pwd) \
+	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
+	    pbuilder \
+	        --build \
+	        --configfile pbuilderrc \
+	        dists/$(*D)/main/source/f-engrave_*.dsc
+	
+	# move built files to the deb archive
+	install -d --mode 0755 $(DEB_DIR)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
+	
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
+	
+	mkdir -p $(shell dirname $@)
+	touch $@
+
+
+.PHONY: f-engrave.dsc
+f-engrave.dsc: clean-f-engrave-dsc $(ALL_F_ENGRAVE_DSCS)
+
+stamps/f-engrave.dsc.build: f-engrave/f-engrave
+	cd $^; dpkg-buildpackage -S -us -uc -I;
+	install --mode 0755 --directory $(shell dirname $@)
+	touch $@
+
+f-engrave/f-engrave:
+	mkdir -p f-engrave
+	cd f-engrave; git clone $(F_ENGRAVE_GIT)
+	cd f-engrave/f-engrave; git checkout $(F_ENGRAVE_BRANCH)
+
+clean-f-engrave:
+	rm -rf f-engrave
 
 
 
