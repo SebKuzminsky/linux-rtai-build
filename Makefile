@@ -508,8 +508,7 @@ linux.dsc: clean-linux-dsc $(ALL_LINUX_DSCS)
 
 # Prepare the linux sources and the debian packaging, then make the dsc.
 # FIXME: This emits an ugly error message
-stamps/linux.dsc.build: linux/linux-$(LINUX_VERSION)
-	ln -s orig/$(LINUX_TARBALL_ORIG) linux
+stamps/linux.dsc.build: linux/linux-$(LINUX_VERSION) linux/$(LINUX_TARBALL_ORIG)
 	( \
 		cd $^; \
 		fakeroot debian/rules source || true; \
@@ -535,6 +534,8 @@ linux/orig/$(LINUX_TARBALL_KERNEL_ORG):
 	mkdir -p $(shell dirname $@)
 	(cd $(shell dirname $@); curl -O $(LINUX_TARBALL_URL))
 
+linux/$(LINUX_TARBALL_ORIG): linux/linux-$(LINUX_VERSION)
+	ln -s orig/$(LINUX_TARBALL_ORIG) linux
 
 # this removes everything but the upstream tarball
 .PHONY: clean-linux
