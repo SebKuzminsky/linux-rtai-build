@@ -76,15 +76,17 @@ LINUX_RTAI_DEBIAN_BRANCH = 3.18.20-rtai
 #
 # linux-tools
 # a specific version of the debian.org upstream, with minor tweaks
+# git://anonscm.debian.org/kernel/linux-tools.git
 #
 
-LINUX_TOOLS_GIT = https://github.com/SebKuzminsky/linux-tools-deb.git
-LINUX_TOOLS_BRANCH = 3.4
+#LINUX_TOOLS_GIT = https://github.com/SebKuzminsky/linux-tools-deb.git
+LINUX_TOOLS_GIT = git://anonscm.debian.org/kernel/linux-tools.git
+LINUX_TOOLS_BRANCH = debian/3.18.5-1_exp1
 
-ALL_LINUX_TOOLS_DSCS = $(foreach DIST,wheezy precise,stamps/$(DIST)/linux-tools.dsc)
+ALL_LINUX_TOOLS_DSCS = $(foreach DIST,jessie,stamps/$(DIST)/linux-tools.dsc)
 
-ALL_LINUX_TOOLS_DEBS = $(foreach DIST,wheezy precise,\
-    $(foreach ARCH,i386,\
+ALL_LINUX_TOOLS_DEBS = $(foreach DIST,jessie,\
+    $(foreach ARCH,i386 amd64,\
         stamps/$(DIST)/$(ARCH)/linux-tools.deb))
 
 
@@ -591,9 +593,9 @@ stamps/linux-tools.dsc.build: linux-tools/linux-tools/debian/rules linux/orig/$(
 	touch $@
 
 linux-tools/linux-tools/debian/rules: linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
-	install -d --mode 0755 linux-tools/linux-tools
-	(cd linux-tools/linux-tools; git clone $(LINUX_TOOLS_GIT) debian)
-	(cd linux-tools/linux-tools/debian; git checkout $(LINUX_TOOLS_BRANCH))
+	mkdir -p linux-tools
+	(cd linux-tools; git clone $(LINUX_TOOLS_GIT))
+	(cd linux-tools/linux-tools; git checkout $(LINUX_TOOLS_BRANCH))
 
 .PHONY: clean-linux-tools
 clean-linux-tools:
