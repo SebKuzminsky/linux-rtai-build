@@ -535,7 +535,7 @@ linux/orig/$(LINUX_TARBALL_KERNEL_ORG):
 	(cd $(shell dirname $@); curl -O $(LINUX_TARBALL_URL))
 
 linux/$(LINUX_TARBALL_ORIG): linux/linux-$(LINUX_VERSION)
-	ln -s orig/$(LINUX_TARBALL_ORIG) linux
+	ln -sf orig/$(LINUX_TARBALL_ORIG) linux
 
 # this removes everything but the upstream tarball
 .PHONY: clean-linux
