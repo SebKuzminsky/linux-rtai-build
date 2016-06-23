@@ -94,7 +94,8 @@ ALL_LINUX_TOOLS_DEBS = $(foreach DIST,jessie,\
 # rtai
 #
 
-# ShabbyX RTAI fork, my branch adds debian packaging
+# a git transcription of the rtai.org Vulcano CVS
+# my branch adds debian packaging
 RTAI_GIT = https://github.com/SebKuzminsky/rtai.git
 
 RTAI_BRANCH = vulcano-debs
