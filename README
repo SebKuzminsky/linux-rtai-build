@@ -274,6 +274,10 @@ apt-get install python-six
 
 = Open Issues
 
+
+== use dput/mini-dinstall with keep_old
+
+
 == Why does pbuilder re-create the dsc, but differently?
 
 The .orig.tar.xz is the same but the other files have different md5sums.
