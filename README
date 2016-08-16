@@ -282,19 +282,6 @@ apt-get install python-six
 
 The .orig.tar.xz is the same but the other files have different md5sums.
 
-== build rtai-modules for the rtai-486 linux-image package
-
-== try to get amd64 going again
-
-64-bit math problems:
-* http://psha.org.ru/irc/%23emc-devel/2014-03-25.html#23:10:36
-* http://article.gmane.org/gmane.linux.real-time.rtai/22724
-* http://article.gmane.org/gmane.linux.real-time.rtai/26416
-
-== what's up with hyperv?
-
-Why isn't hid-hyperv getting built any more?  It's in the 3.4.87 kernel,
-and i didn't change the config.  There are other hyperv modules getting built.
 
 == linux: turn off the 'none' featureset, it just wastes build time
 
@@ -303,39 +290,6 @@ and i didn't change the config.  There are other hyperv modules getting built.
 == Make a new install-%-deb target, for all to use
 
 Should this target remove any existing debs from dists/%/?  Probably not?
-
-== usb is broken on skunkworks' machine
-
-http://psha.org.ru/irc/%23emc-devel/2014-07-03.html#15:22:31
-
-3.4.55-2linuxcnc:
-
-    [15:22:31] <skunkworks> cradek, jepler, usb ports don't work with rtai kernel - do work with the debian -rt kernel... 
-
-3.4.55-3linuxcnc:
-
-    added these:
-
-    CONFIG_USB_OHCI_HCD_PLATFORM=y
-    CONFIG_USB_EHCI_HCD_PLATFORM=y
-
-    still didnt fix it for skunkworks
-
-    2014-07-10:
-
-        08:00 < pcw_home> stock 10.04 with 2.6.32 RTAI definitely doesn't work
-        08:06 < pcw_home> Even some older stock kernels dont work (the 3.2 that comes with 12.04 doesnt work)
-        08:06 < pcw_home> It may be asking a lot to have RTAI support for the JXXXX CPUs since they are so new
-        
-    but the fact that it works on debian's 3.2 kernel makes me think it could work for us too
-
-https://bugzilla.redhat.com/show_bug.cgi?id=1039245
-
-PCI_IOAPIC is off
-
-bunch of ACPI things
-
-PCI_MSI is off
 
 
 == rtai package fixup
