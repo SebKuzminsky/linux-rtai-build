@@ -285,7 +285,9 @@ The .orig.tar.xz is the same but the other files have different md5sums.
 
 == linux: turn off the 'none' featureset, it just wastes build time
 
+
 == download all orig things into /orig, so they're easier to save on 'make clean'
+
 
 == Make a new install-%-deb target, for all to use
 
@@ -305,6 +307,7 @@ It currently installs files in:
 
     /etc/udev/rules.d (make this one rtai-modules-common?)
     /usr/realtime-$VERSION
+
 
 == update-deb-archive doesn't need ARCH
 
