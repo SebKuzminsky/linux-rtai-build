@@ -80,9 +80,9 @@ LINUX_RTAI_DEBIAN_BRANCH = 4.1.18-rtai
 # git://anonscm.debian.org/kernel/linux-tools.git
 #
 
-#LINUX_TOOLS_GIT = https://github.com/SebKuzminsky/linux-tools-deb.git
-LINUX_TOOLS_GIT = git://anonscm.debian.org/kernel/linux-tools.git
-LINUX_TOOLS_BRANCH = debian/3.18.5-1_exp1
+LINUX_TOOLS_GIT = https://github.com/SebKuzminsky/linux-tools-deb.git
+#LINUX_TOOLS_GIT = git://anonscm.debian.org/kernel/linux-tools.git
+LINUX_TOOLS_BRANCH = 4.1.18-linuxcnc
 
 ALL_LINUX_TOOLS_DSCS = $(foreach DIST,jessie,stamps/$(DIST)/linux-tools.dsc)
 
@@ -596,7 +596,7 @@ stamps/linux-tools.dsc.build: linux-tools/linux-tools/debian/rules linux/orig/$(
 
 linux-tools/linux-tools/debian/rules: linux/orig/$(LINUX_TARBALL_KERNEL_ORG)
 	mkdir -p linux-tools
-	(cd linux-tools; git clone $(LINUX_TOOLS_GIT))
+	(cd linux-tools; git clone $(LINUX_TOOLS_GIT) linux-tools)
 	(cd linux-tools/linux-tools; git checkout $(LINUX_TOOLS_BRANCH))
 
 .PHONY: clean-linux-tools
