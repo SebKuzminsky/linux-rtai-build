@@ -6,7 +6,7 @@
 DISTS ?= jessie wheezy precise lucid
 ARCHES ?= i386 amd64
 
-LINUX_IMAGE_VERSION ?= 3.18.0-1
+LINUX_IMAGE_VERSION ?= 4.1.0-1
 FEATURESET ?= rtai
 LINUX_IMAGE_FLAVORS ?= 686-pae amd64
 
@@ -52,11 +52,11 @@ ALL_KMOD_DEBS = $(foreach DIST,precise,\
 # linux
 #
 
-LINUX_VERSION = 3.18.20
+LINUX_VERSION = 4.1.18
 
 # this is the name and URL of the tarball at kernel.org
 LINUX_TARBALL_KERNEL_ORG = linux-$(LINUX_VERSION).tar.xz
-LINUX_TARBALL_URL = https://www.kernel.org/pub/linux/kernel/v3.x/$(LINUX_TARBALL_KERNEL_ORG)
+LINUX_TARBALL_URL = https://www.kernel.org/pub/linux/kernel/v4.x/$(LINUX_TARBALL_KERNEL_ORG)
 
 # This tarball is made by the debian kernel scripts from the kernel.org
 # tarball by removing non-free firmwares, etc.
@@ -69,8 +69,9 @@ ALL_LINUX_DEBS = $(foreach DIST,jessie,\
         stamps/$(DIST)/$(ARCH)/linux.deb))
 
 # this is the linux/debian directory for the rtai-patched kernel
-LINUX_RTAI_DEBIAN_GIT = https://github.com/SebKuzminsky/linux-rtai-debian.git
-LINUX_RTAI_DEBIAN_BRANCH = 3.18.20-rtai
+#LINUX_RTAI_DEBIAN_GIT = https://github.com/SebKuzminsky/linux-rtai-debian.git
+LINUX_RTAI_DEBIAN_GIT = file:///home/seb/rtai-debs/linux
+LINUX_RTAI_DEBIAN_BRANCH = 4.1.18-rtai
 
 
 #
