@@ -707,7 +707,7 @@ pbuilder/%/base.tgz: pbuilder/keyring.gpg stamps/%/deb-archive
 	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) amd64
 	
 	if [ -f pbuilder/$(*D)/$(*F)/base.tgz ]; then \
-		sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --update --configfile pbuilderrc; \
+		sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder update --override-config --configfile pbuilderrc; \
 	else \
 		mkdir -p pbuilder/$(*D)/$(*F); \
 		sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --create --configfile pbuilderrc; \
