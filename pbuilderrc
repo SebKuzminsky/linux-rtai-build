@@ -9,9 +9,10 @@ test -z "$DIST" && echo "error:  DIST undefined" 1>&2 && exit 1
 #    BINDMOUNTS="$TOPDIR/$INTERMEDIATE_REPO"
 #    OTHERMIRROR="deb [arch=$ARCH] file://$TOPDIR/$INTERMEDIATE_REPO $DIST main"
 #fi
+OTHERMIRROR="deb [arch=$ARCH] http://ftp.debian.org/debian $DIST-backports main"
 if [ -d dists/ ]; then
     BINDMOUNTS=$TOPDIR/dists/
-    OTHERMIRROR="deb [arch=$ARCH] file://$TOPDIR/ $DIST main"
+    OTHERMIRROR="${OTHERMIRROR} | deb [arch=$ARCH] file://$TOPDIR/ $DIST main"
 fi
 
 # For building modules
