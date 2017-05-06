@@ -6,7 +6,7 @@
 DISTS ?= jessie wheezy precise lucid
 ARCHES ?= i386 amd64
 
-LINUX_IMAGE_VERSION ?= 4.1.0-1
+LINUX_IMAGE_VERSION ?= 4.4.0-0.abi.2
 FEATURESET ?= rtai
 LINUX_IMAGE_FLAVORS ?= 686-pae amd64
 
@@ -52,7 +52,7 @@ ALL_KMOD_DEBS = $(foreach DIST,precise,\
 # linux
 #
 
-LINUX_VERSION = 4.1.18
+LINUX_VERSION = 4.4.43
 
 # this is the name and URL of the tarball at kernel.org
 LINUX_TARBALL_KERNEL_ORG = linux-$(LINUX_VERSION).tar.xz
@@ -71,7 +71,7 @@ ALL_LINUX_DEBS = $(foreach DIST,jessie,\
 # this is the linux/debian directory for the rtai-patched kernel
 #LINUX_RTAI_DEBIAN_GIT = https://github.com/SebKuzminsky/linux-rtai-debian.git
 LINUX_RTAI_DEBIAN_GIT = file:///home/seb/rtai-debs/linux
-LINUX_RTAI_DEBIAN_BRANCH = 4.1.18-rtai
+LINUX_RTAI_DEBIAN_BRANCH = 4.4.43-rtai
 
 
 #
@@ -82,7 +82,7 @@ LINUX_RTAI_DEBIAN_BRANCH = 4.1.18-rtai
 
 LINUX_TOOLS_GIT = https://github.com/SebKuzminsky/linux-tools-deb.git
 #LINUX_TOOLS_GIT = git://anonscm.debian.org/kernel/linux-tools.git
-LINUX_TOOLS_BRANCH = 4.1.18-linuxcnc
+LINUX_TOOLS_BRANCH = 4.4.43-linuxcnc
 
 ALL_LINUX_TOOLS_DSCS = $(foreach DIST,jessie,stamps/$(DIST)/linux-tools.dsc)
 
