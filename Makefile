@@ -6,7 +6,7 @@
 DISTS ?= jessie wheezy precise lucid
 ARCHES ?= i386 amd64
 
-LINUX_IMAGE_VERSION ?= 4.4.0-0.abi.2
+LINUX_IMAGE_VERSION ?= 4.4.0-0.bpo.2
 FEATURESET ?= rtai
 LINUX_IMAGE_FLAVORS ?= 686-pae amd64
 
