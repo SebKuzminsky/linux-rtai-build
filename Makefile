@@ -129,9 +129,9 @@ ALL_MESAFLASH_DEBS = $(foreach DIST,stretch jessie wheezy precise lucid,\
 TRUETYPE_TRACER_GIT = git://timeguy.com/truetype-tracer.git
 TRUETYPE_TRACER_BRANCH = master
 
-ALL_TRUETYPE_TRACER_DSCS = $(foreach DIST,wheezy precise lucid,stamps/$(DIST)/truetype-tracer.dsc)
+ALL_TRUETYPE_TRACER_DSCS = $(foreach DIST,stretch jessie wheezy precise,stamps/$(DIST)/truetype-tracer.dsc)
 
-ALL_TRUETYPE_TRACER_DEBS = $(foreach DIST,wheezy precise lucid,\
+ALL_TRUETYPE_TRACER_DEBS = $(foreach DIST,stretch jessie wheezy precise,\
     $(foreach ARCH,amd64 i386,\
         stamps/$(DIST)/$(ARCH)/truetype-tracer.deb))
 
