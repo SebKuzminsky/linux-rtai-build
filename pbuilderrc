@@ -9,10 +9,11 @@ test -z "$DIST" && echo "error:  DIST undefined" 1>&2 && exit 1
 #    BINDMOUNTS="$TOPDIR/$INTERMEDIATE_REPO"
 #    OTHERMIRROR="deb [arch=$ARCH] file://$TOPDIR/$INTERMEDIATE_REPO $DIST main"
 #fi
-OTHERMIRROR="deb [arch=$ARCH] http://ftp.debian.org/debian $DIST-backports main"
 if [ -d dists/ ]; then
     BINDMOUNTS=$TOPDIR/dists/
-    OTHERMIRROR="${OTHERMIRROR} | deb [arch=$ARCH] file://$TOPDIR/ $DIST main"
+    OTHERMIRROR="deb [arch=$ARCH] file://$TOPDIR/ $DIST main"
+else
+    OTHERMIRROR=""
 fi
 
 # For building modules
@@ -25,7 +26,7 @@ fi
 # DEBEMAIL='John Doe <jdoe@example.com>'
 
 # Debian configuration
-DEBIAN_SUITES=("jessie" "wheezy")
+DEBIAN_SUITES=("stretch" "jessie" "wheezy")
 DEBIAN_MIRROR="ftp.debian.org"
 
 # Ubuntu configuration
@@ -75,9 +76,6 @@ DEBOOTSTRAPOPTS=(
 # set arch for create mode
 ARCHITECTURE=${ARCH}
 
-# unexport ARCH; messes with at least kernel pkgs
-export -n ARCH; unset ARCH
-
 
 # compute MIRRORSITE and COMPONENTS values
 if $(echo ${DEBIAN_SUITES[@]} | grep -q $DIST); then
@@ -85,17 +83,23 @@ if $(echo ${DEBIAN_SUITES[@]} | grep -q $DIST); then
     MIRRORSITE="http://$DEBIAN_MIRROR/debian/"
     #COMPONENTS="main contrib non-free"
     COMPONENTS="main"
+    OTHERMIRROR="${OTHERMIRROR} | deb [arch=$ARCH] http://${DEBIAN_MIRROR}/debian $DIST-backports main"
 
 elif $(echo ${UBUNTU_SUITES[@]} | grep -q $DIST); then
     # Ubuntu configuration
     MIRRORSITE="http://$UBUNTU_MIRROR/ubuntu/"
     #COMPONENTS="main restricted universe multiverse"
     COMPONENTS="main"
+    OTHERMIRROR="${OTHERMIRROR} | deb [arch=$ARCH] http://${UBUNTU_MIRROR}/ubuntu $DIST-backports main"
 
 else
     echo "Unknown distribution: $DIST"
     exit 1
 fi
+
+
+# unexport ARCH; messes with at least kernel pkgs
+export -n ARCH; unset ARCH
 
 
 # Hardy fixes
