@@ -113,11 +113,11 @@ ALL_RTAI_DEBS = $(foreach DIST,jessie,\
 #
 
 MESAFLASH_GIT = https://github.com/micges/mesaflash.git
-MESAFLASH_BRANCH = v3.2
+MESAFLASH_BRANCH = v3.3
 
-ALL_MESAFLASH_DSCS = $(foreach DIST,stretch jessie wheezy precise lucid,stamps/$(DIST)/mesaflash.dsc)
+ALL_MESAFLASH_DSCS = $(foreach DIST,stretch jessie wheezy precise,stamps/$(DIST)/mesaflash.dsc)
 
-ALL_MESAFLASH_DEBS = $(foreach DIST,stretch jessie wheezy precise lucid,\
+ALL_MESAFLASH_DEBS = $(foreach DIST,stretch jessie wheezy precise,\
     $(foreach ARCH,i386 amd64,\
         stamps/$(DIST)/$(ARCH)/mesaflash.deb))
 
@@ -362,7 +362,11 @@ stamps/%/mesaflash.deb: pbuilder/%/base.tgz
 .PHONY: mesaflash.dsc
 mesaflash.dsc: clean-mesaflash-dsc $(ALL_MESAFLASH_DSCS)
 
-stamps/mesaflash.dsc.build: mesaflash/mesaflash
+.PHONY: mesaflash/mesaflash-orig-source
+mesaflash/mesaflash-orig-source: mesaflash/mesaflash
+	cd $^; ./debian/rules get-orig-source && mv mesaflash_*.tar.* ..
+
+stamps/mesaflash.dsc.build: mesaflash/mesaflash mesaflash/mesaflash-orig-source
 	cd $^; dpkg-buildpackage -S -us -uc -I;
 	install --mode 0755 --directory $(shell dirname $@)
 	touch $@
