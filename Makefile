@@ -143,9 +143,9 @@ ALL_TRUETYPE_TRACER_DEBS = $(foreach DIST,stretch jessie wheezy precise,\
 F_ENGRAVE_GIT = git://github.com/SebKuzminsky/f-engrave.git
 F_ENGRAVE_BRANCH = master
 
-ALL_F_ENGRAVE_DSCS = $(foreach DIST,jessie wheezy precise,stamps/$(DIST)/f-engrave.dsc)
+ALL_F_ENGRAVE_DSCS = $(foreach DIST,stretch jessie wheezy precise,stamps/$(DIST)/f-engrave.dsc)
 
-ALL_F_ENGRAVE_DEBS = $(foreach DIST,jessie wheezy precise,\
+ALL_F_ENGRAVE_DEBS = $(foreach DIST,stretch jessie wheezy precise,\
     $(foreach ARCH,amd64 i386,\
         stamps/$(DIST)/$(ARCH)/f-engrave.deb))
 
