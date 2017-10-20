@@ -151,6 +151,20 @@ ALL_F_ENGRAVE_DEBS = $(foreach DIST,stretch jessie wheezy precise,\
 
 
 #
+# pycam
+#
+
+PYCAM_GIT = git://github.com/SebKuzminsky/pycam.git
+PYCAM_BRANCH = stable/0.6
+
+ALL_PYCAM_DSCS = $(foreach DIST,stretch jessie trusty,stamps/$(DIST)/pycam.dsc)
+
+ALL_PYCAM_DEBS = $(foreach DIST,stretch jessie trusty,\
+    $(foreach ARCH,amd64 i386,\
+        stamps/$(DIST)/$(ARCH)/pycam.deb))
+
+
+#
 # glade-3
 # needed on wheezy to change our glade-based guis
 # from here: http://packages.ubuntu.com/source/trusty/glade-3
@@ -476,6 +490,55 @@ f-engrave/f-engrave:
 
 clean-f-engrave:
 	rm -rf f-engrave
+
+
+
+
+#
+# pycam rules
+#
+
+.PHONY: pycam.deb
+pycam.deb: $(ALL_PYCAM_DEBS)
+
+stamps/%/pycam.deb: pbuilder/%/base.tgz
+	make stamps/$(*D)/pycam.dsc
+	mkdir -p pbuilder/$(*D)/$(*F)/pkgs
+	sudo \
+	    DIST=$(*D) \
+	    ARCH=$(*F) \
+	    TOPDIR=$(shell pwd) \
+	    DEB_BUILD_OPTIONS=parallel=$$(($$(nproc)*3/2)) \
+	    pbuilder \
+	        --build \
+	        --configfile pbuilderrc \
+	        dists/$(*D)/main/source/pycam_*.dsc
+
+	# move built files to the deb archive
+	install -d --mode 0755 $(DEB_DIR)
+	mv pbuilder/$(*D)/$(*F)/pkgs/*.deb $(DEB_DIR)
+
+	./update-deb-archive $(ARCHIVE_SIGNING_KEY) $(*D) $(*F)
+
+	mkdir -p $(shell dirname $@)
+	touch $@
+
+
+.PHONY: pycam.dsc
+pycam.dsc: clean-pycam-dsc $(ALL_PYCAM_DSCS)
+
+stamps/pycam.dsc.build: pycam/pycam
+	cd $^; dpkg-buildpackage -S -us -uc -I;
+	install --mode 0755 --directory $(shell dirname $@)
+	touch $@
+
+pycam/pycam:
+	mkdir -p pycam
+	cd pycam; git clone $(PYCAM_GIT)
+	cd pycam/pycam; git checkout $(PYCAM_BRANCH)
+
+clean-pycam:
+	rm -rf pycam
 
 
 
