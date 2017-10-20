@@ -31,7 +31,7 @@ DEBIAN_MIRROR="ftp.debian.org"
 
 # Ubuntu configuration
 UBUNTU_SUITES=("precise" "lucid")
-UBUNTU_MIRROR="ftp.ubuntu.com"
+UBUNTU_MIRROR="archive.ubuntu.com"
 
 # Keyring file
 KEYRING=${TOPDIR}/pbuilder/keyring.gpg
