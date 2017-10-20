@@ -3,7 +3,7 @@
 # Override these in the environment as you wish.
 #
 
-DISTS ?= stretch jessie wheezy precise lucid
+DISTS ?= stretch jessie wheezy trusty precise lucid
 ARCHES ?= i386 amd64
 
 LINUX_IMAGE_VERSION ?= 4.4.0-0.bpo.2
@@ -804,7 +804,7 @@ clean-pbuilder:
 
 .PHONY: dists
 dists:
-	bash -c 'mkdir -p dists/{wheezy,precise,lucid}/main/{source,binary-{i386,amd64}}'
+	bash -c 'mkdir -p dists/{stretch,jessie,wheezy,trusty,precise}/main/{source,binary-{i386,amd64}}'
 
 .PRECIOUS: stamps/%/deb-archive
 stamps/%/deb-archive:
