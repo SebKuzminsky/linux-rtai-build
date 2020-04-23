@@ -156,7 +156,7 @@ ALL_F_ENGRAVE_DEBS = $(foreach DIST,stretch jessie wheezy precise,\
 
 PYCAM_GIT = git://github.com/SebKuzminsky/pycam.git
 #PYCAM_BRANCH = stable/0.6
-PYCAM_BRANCH = v0.6.2
+PYCAM_BRANCH = v0.6.3
 
 ALL_PYCAM_DSCS = $(foreach DIST,stretch jessie trusty,stamps/$(DIST)/pycam.dsc)
 
