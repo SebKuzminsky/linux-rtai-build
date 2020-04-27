@@ -3,7 +3,7 @@
 # Override these in the environment as you wish.
 #
 
-DISTS ?= stretch jessie wheezy trusty precise lucid
+DISTS ?= buster stretch jessie wheezy trusty precise lucid
 ARCHES ?= i386 amd64
 
 LINUX_IMAGE_VERSION ?= 4.4.0-0.bpo.2
@@ -186,9 +186,10 @@ ALL_GLADE-3_DEBS = $(foreach DIST,wheezy,\
 # random shared metadata
 #
 
+BUSTER_KEY_ID = DCC9EFBF77E11517
 WHEEZY_KEY_ID = 6FB2A1C265FFB764
 UBUNTU_KEY_ID = 40976EAF437D05B5
-KEY_IDS = $(WHEEZY_KEY_ID) $(UBUNTU_KEY_ID)
+KEY_IDS = $(BUSTER_KEY_ID) $(WHEEZY_KEY_ID) $(UBUNTU_KEY_ID)
 
 DEB_DIR = dists/$(*D)/main/binary-$(*F)/
 UDEB_DIR = dists/$(*D)/main/udeb/binary-$(*F)/
@@ -789,8 +790,9 @@ pbuilder/%/login: pbuilder/%/base.tgz
 
 pbuilder/keyring.gpg:
 	mkdir -p pbuilder
-	gpg --keyserver hkp://keys.gnupg.net --keyring $@ --no-default-keyring --recv-key $(KEY_IDS)
-	gpg --armor --export $(ARCHIVE_SIGNING_KEY) | gpg --keyring pbuilder/keyring.gpg --no-default-keyring --import --armor
+	gpg --keyserver hkp://keys.gnupg.net --keyring $@.tmp --no-default-keyring --receive-keys $(KEY_IDS)
+	gpg --export $(ARCHIVE_SIGNING_KEY) | gpg --keyring $@.tmp --no-default-keyring --import
+	gpg --no-default-keyring --keyring $@.tmp --export --output $@
 	mkdir -p dists
 	gpg --armor --export $(ARCHIVE_SIGNING_KEY) >| dists/archive-signing-key.gpg
 
