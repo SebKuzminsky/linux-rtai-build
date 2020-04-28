@@ -1,29 +1,15 @@
-#							-*-shell-script-*-
+# -*-shell-script-*-
 # TOPDIR, ARCH and DIST should be passed in from outside
 #test -z "$TOPDIR" && echo "error:  TOPDIR undefined" 1>&2 && exit 1
 test -z "$ARCH" && echo "error:  ARCH undefined" 1>&2 && exit 1
 test -z "$DIST" && echo "error:  DIST undefined" 1>&2 && exit 1
 
-# For dependent pkgs
-#if test -n "$INTERMEDIATE_REPO"; then
-#    BINDMOUNTS="$TOPDIR/$INTERMEDIATE_REPO"
-#    OTHERMIRROR="deb [arch=$ARCH] file://$TOPDIR/$INTERMEDIATE_REPO $DIST main"
-#fi
 if [ -d dists/ ]; then
     BINDMOUNTS=$TOPDIR/dists/
     OTHERMIRROR="deb [arch=$ARCH] file://$TOPDIR/ $DIST main"
 else
     OTHERMIRROR=""
 fi
-
-# For building modules
-#if test -n "$PACKAGE_DIR"; then
-#    BINDMOUNTS="$BINDMOUNTS $TOPDIR/$PACKAGE_DIR"
-#fi
-
-# Other useful opts from cmdline:
-# DEBBUILDOPTS=-Tbinary-arch
-# DEBEMAIL='John Doe <jdoe@example.com>'
 
 # Debian configuration
 DEBIAN_SUITES=("buster" "stretch" "jessie" "wheezy")
@@ -38,7 +24,6 @@ OLD_UBUNTU_MIRROR="archive.ubuntu.com"
 
 # Keyring file
 KEYRING=${TOPDIR}/pbuilder/keyring.gpg
-#APTKEYRINGS=("${APTKEYRINGS[@]}" "$TOPDIR/admin/$KEYRING")
 APTKEYRINGS=("${APTKEYRINGS[@]}" "$KEYRING")
 
 # Distribution
@@ -46,7 +31,6 @@ DISTRIBUTION=${DIST}
 
 # Base tarball
 BASETGZ="${TOPDIR}/pbuilder/${DIST}/${ARCH}/base.tgz"
-#BASETGZ="pbuilder/${DIST}/${ARCH}/base.tgz"
 
 # Where to build
 BUILDPLACE="${TOPDIR}/tmp"
@@ -56,14 +40,10 @@ BUILDRESULT="pbuilder/${DIST}/${ARCH}/pkgs"
 
 # cache for packages
 APTCACHE="${TOPDIR}/aptcache/${DIST}/${ARCH}/"
-#APTCACHEHARDLINK=no
 
 # ccache
 CCACHEDIR="${TOPDIR}/ccache"
 test -d ${CCACHEDIR} || mkdir -p ${CCACHEDIR}
-
-# always log builds
-#PKGNAME_LOGFILE=yes
 
 # hook directory
 HOOKDIR="${TOPDIR}/pbuilder"
@@ -73,12 +53,10 @@ DEBOOTSTRAPOPTS=(
     "${DEBOOTSTRAPOPTS[@]}"
     "--arch=${ARCH}"
     "--keyring=${KEYRING}"
-    #"--include=gnupg"
 )
 
 # set arch for create mode
 ARCHITECTURE=${ARCH}
-
 
 if $(echo ${DEBIAN_SUITES[@]} | grep -q $DIST); then
     MIRRORSITE="http://$DEBIAN_MIRROR/debian/"
@@ -103,13 +81,6 @@ fi
 
 # unexport ARCH; messes with at least kernel pkgs
 export -n ARCH; unset ARCH
-
-
-# Hardy fixes
-#if test $DIST = hardy; then
-    # Add backports; this isn't enough to fix building for hardy
-#    OTHERMIRROR="$OTHERMIRROR | deb http://archive.ubuntu.com/ubuntu hardy-backports main restricted universe multiverse"
-#fi
 
 
 # Print diagnostics
