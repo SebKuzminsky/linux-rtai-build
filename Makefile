@@ -385,7 +385,7 @@ mesaflash/mesaflash-orig-source: mesaflash/mesaflash
 	cd $^; ./debian/rules get-orig-source && mv mesaflash_*.tar.* ..
 
 stamps/mesaflash.dsc.build: mesaflash/mesaflash mesaflash/mesaflash-orig-source
-	cd $^; dpkg-buildpackage -S -us -uc -I;
+	cd $<; dpkg-buildpackage -S -us -uc -I;
 	install --mode 0755 --directory $(shell dirname $@)
 	touch $@
 
