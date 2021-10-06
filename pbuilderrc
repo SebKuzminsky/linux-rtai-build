@@ -12,6 +12,21 @@ else
 fi
 
 case "${DIST}" in
+    unstable)
+        MIRRORSITE="http://ftp.debian.org/debian/"
+        COMPONENTS="main"
+        ;;
+
+    testing)
+        MIRRORSITE="http://ftp.debian.org/debian/"
+        COMPONENTS="main"
+        ;;
+
+    bullseye)
+        MIRRORSITE="http://ftp.debian.org/debian/"
+        COMPONENTS="main"
+        ;;
+
     buster)
         MIRRORSITE="http://ftp.debian.org/debian/"
         COMPONENTS="main"

@@ -3,7 +3,7 @@
 # Override these in the environment as you wish.
 #
 
-DISTS ?= buster stretch jessie wheezy trusty precise lucid
+DISTS ?= unstable testing bullseye buster stretch jessie wheezy trusty precise lucid
 ARCHES ?= i386 amd64
 
 LINUX_IMAGE_VERSION ?= 4.4.0-0.bpo.2
