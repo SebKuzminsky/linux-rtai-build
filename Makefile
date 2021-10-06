@@ -112,12 +112,14 @@ ALL_RTAI_DEBS = $(foreach DIST,jessie,\
 # mesaflash
 #
 
-MESAFLASH_GIT = https://github.com/LinuxCNC/mesaflash.git
-MESAFLASH_BRANCH = master
+#MESAFLASH_GIT = https://github.com/LinuxCNC/mesaflash.git
+#MESAFLASH_BRANCH = master
+MESAFLASH_GIT = ~seb/mesaflash.git
+MESAFLASH_BRANCH = prep-for-release
 
-ALL_MESAFLASH_DSCS = $(foreach DIST,buster stretch jessie wheezy precise,stamps/$(DIST)/mesaflash.dsc)
+ALL_MESAFLASH_DSCS = $(foreach DIST,unstable testing bullseye buster stretch jessie wheezy precise,stamps/$(DIST)/mesaflash.dsc)
 
-ALL_MESAFLASH_DEBS = $(foreach DIST,buster stretch jessie wheezy precise,\
+ALL_MESAFLASH_DEBS = $(foreach DIST,unstable testing bullseye buster stretch jessie wheezy precise,\
     $(foreach ARCH,i386 amd64,\
         stamps/$(DIST)/$(ARCH)/mesaflash.deb))
 
