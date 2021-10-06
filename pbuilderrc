@@ -54,9 +54,9 @@ case "${DIST}" in
         ;;
 
     precise)
-        MIRRORSITE="http://archive.ubuntu.com/ubuntu/"
+        MIRRORSITE="http://old-releases.ubuntu.com/ubuntu/"
         COMPONENTS="main universe"
-        OTHERMIRROR="${OTHERMIRROR}|deb [arch=$ARCH] http://archive.ubuntu.com/ubuntu $DIST-backports main universe"
+        OTHERMIRROR="${OTHERMIRROR}|deb [arch=$ARCH] http://old-releases.ubuntu.com/ubuntu $DIST-backports main universe"
         ;;
 
     lucid)
