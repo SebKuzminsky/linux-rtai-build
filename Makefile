@@ -792,9 +792,14 @@ pbuilder/%/base.tgz: pbuilder/keyring.gpg stamps/%/deb-archive
 pbuilder/%/login: pbuilder/%/base.tgz
 	sudo DIST=$(*D) ARCH=$(*F) TOPDIR=$(shell pwd) pbuilder --login --configfile pbuilderrc;
 
+#KEYSERVER = hkp://keys.gnupg.net
+#KEYSERVER = hkps://keys.openpgp.org/
+KEYSERVER = hkps://keyserver.ubuntu.com/
+
+#.PHONY: pbuilder/keyring.gpg
 pbuilder/keyring.gpg:
 	mkdir -p pbuilder
-	gpg --keyserver hkp://keys.gnupg.net --keyring $@.tmp --no-default-keyring --receive-keys $(KEY_IDS)
+	gpg --keyserver $(KEYSERVER) --keyring $@.tmp --no-default-keyring --receive-keys $(KEY_IDS)
 	gpg --export $(ARCHIVE_SIGNING_KEY) | gpg --keyring $@.tmp --no-default-keyring --import
 	gpg --no-default-keyring --keyring $@.tmp --export --output $@
 	mkdir -p dists
