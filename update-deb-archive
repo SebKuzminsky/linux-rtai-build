@@ -13,6 +13,8 @@ rm -f $(find dists/$DIST/ -name 'Contents*')
 rm -f dists/$DIST/Release
 rm -f dists/$DIST/Release.gpg
 
+mkdir -p dists/$DIST/main/binary-{all,i386,amd64}
+
 apt-ftparchive -o APT::FTPArchive::AlwaysStat=True -c apt-ftparchive.conf generate generate-$DIST.conf
 
 apt-ftparchive -o APT::FTPArchive::AlwaysStat=True -c release-$DIST.conf release dists/$DIST/ >| dists/$DIST/Release
